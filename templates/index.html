@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WA Simulasi</title>
+    <title>WhatsApp - Simulasi Cicilan HCI</title>
     <style>
         * {
             box-sizing: border-box;
@@ -181,19 +181,26 @@
             flex-shrink: 0;
         }
 
-        /* MEMBUAT TEKS RATA KIRI, UKURAN PAS, DAN TIDAK KEBESARAN */
+        /* PENGATURAN GELEMBUNG CHAT AGAR RATA KIRI, RAPI, & UKURAN PAS */
         .message {
-            max-width: 82%;
-            padding: 9px 12px;
+            max-width: 85%;
+            padding: 10px 14px;
             border-radius: 7.5px;
             font-size: 14.5px;
-            line-height: 1.45;
+            line-height: 1.5;
             word-wrap: break-word;
             position: relative;
-            white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
             text-align: left !important;
         }
+        
+        /* KHUSUS KONTEN DI DALAM PESAN BOT AGAR TAMPIL RAPI SEJAJAR */
+        .message-content {
+            display: inline-block;
+            text-align: left !important;
+            width: 100%;
+        }
+
         .message.bot {
             background-color: #202c33;
             color: #e9edef;
@@ -211,9 +218,9 @@
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
-            margin-top: 3px;
+            margin-top: 4px;
             float: right;
-            margin-left: 8px;
+            margin-left: 10px;
         }
         .time {
             font-size: 10.5px;
@@ -256,16 +263,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 9px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -412,12 +419,14 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka Pertama (Rata Kiri, Rapi, & Ukuran Pas) -->
+            <!-- Pesan Pembuka Pertama dengan Struktur Rapi & Rata Kiri -->
             <div class="message bot">
-                ✨ <b>{{ salam }}</b> ✨<br><br>
-                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
-                <i>(Contoh: 3.500.000 atau 3500000)</i>
+                <div class="message-content">
+                    ✨ <b>{{ salam }}</b> ✨<br><br>
+                    🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                    📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
+                    <i>(Contoh: 3.500.000 atau 3500000)</i>
+                </div>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
                 </div>
@@ -517,7 +526,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru (Otomatis menyesuaikan waktu sapaan lokal dengan rapi)
+        // Fungsi Tombol Hitung Simulasi Baru
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
@@ -545,11 +554,7 @@
             msgDiv.className = `message ${sender}`;
             
             if(sender === 'bot') {
-                msgDiv.innerHTML = text + htmlButtons;
-                const meta = document.createElement('div');
-                meta.className = 'message-meta';
-                meta.innerHTML = `<span class="time">${getCurrentTime()}</span>`;
-                msgDiv.appendChild(meta);
+                msgDiv.innerHTML = `<div class="message-content">${text}</div>` + htmlButtons + `<div class="message-meta"><span class="time">${getCurrentTime()}</span></div>`;
             } else {
                 msgDiv.innerText = text;
                 const meta = document.createElement('div');
