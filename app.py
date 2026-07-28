@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template_string, request, jsonify
 from datetime import datetime
 import os
 
@@ -36,121 +36,274 @@ def get_salam_waktu() -> str:
     else:
         return "SELAMAT MALAM 🌙"
 
-@app.route("/")
-def index():
-    return render_template("index.html", salam=get_salam_waktu())
+# Template HTML & CSS yang disatukan langsung di dalam file app.py
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Cicilan HCI - WhatsApp</title>
+    <style>
+        body {
+            background-color: #0b141a;
+            color: #e9edef;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .wa-header {
+            background-color: #202c33;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #222d34;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .wa-avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #e65c00, #f9d423);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            margin-right: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .wa-info h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #e9edef;
+            font-weight: 500;
+        }
+        .wa-info p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: #00a884;
+            font-weight: 500;
+        }
+        .wa-chat-container {
+            flex: 1;
+            margin-top: 62px;
+            margin-bottom: 70px;
+            padding: 15px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #0b141a;
+            background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
+            max-width: 750px;
+            width: 100%;
+            align-self: center;
+            box-sizing: border-box;
+        }
+        .message {
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+            white-space: pre-wrap;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        }
+        .message.bot {
+            background-color: #202c33;
+            color: #e9edef;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            border-left: 4px solid #00a884;
+        }
+        .message.user {
+            background-color: #005c4b;
+            color: #e9edef;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+        .message-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 4px;
+            float: right;
+            margin-left: 12px;
+        }
+        .time {
+            font-size: 11px;
+            color: #8696a0;
+        }
+        .check-icon {
+            font-size: 13px;
+            color: #53bdeb;
+            font-weight: bold;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .wa-btn {
+            background-color: #005c4b;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .wa-btn:hover { background-color: #006c58; }
+        .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
+        .wa-btn.whatsapp:hover { background-color: #009072; }
+        
+        .emoji-picker {
+            position: absolute;
+            bottom: 75px;
+            left: 15px;
+            background-color: #202c33;
+            border: 1px solid #2a3942;
+            border-radius: 12px;
+            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 200;
+        }
+        .emoji-item {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 6px;
+        }
+        .emoji-item:hover { background-color: #2a3942; }
 
-@app.route("/process", methods=["POST"])
-def process():
-    req = request.json
-    step = req.get("step")
-    text = req.get("text").replace(".", "").replace(",", "").strip()
-    data = req.get("data")
+        .wa-input-area {
+            background-color: #202c33;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 750px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top: 1px solid #222d34;
+        }
+        .wa-input-area .icon-btn {
+            background: none;
+            border: none;
+            color: #8696a0;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .wa-input-area input {
+            flex: 1;
+            background-color: #2a3942;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+        .wa-input-area input::placeholder { color: #8696a0; }
+        .wa-input-area .send-btn {
+            background-color: #00a884;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
 
-    if step == "GET_PRICE":
-        try:
-            harga = float(text)
-            if harga < 500_000:
-                return jsonify({"next_step": "GET_PRICE", "data": data, "reply": "⚠️ Minimal harga barang adalah Rp 500.000. Silakan masukkan harga yang valid:"})
-            
-            data["harga"] = harga
-            return jsonify({
-                "next_step": "GET_DP", "data": data, 
-                "reply": f"✅ Harga Barang tercatat: <b>Rp {harga:,.0f}</b>\n\n💵 Masukkan jumlah <b>Uang Muka (DP)</b> yang ingin dibayarkan\n\n<i>(Ketik 0 jika tanpa DP)</i>"
-            })
-        except ValueError:
-            return jsonify({"next_step": "GET_PRICE", "data": data, "reply": "⚠️ Format harga tidak valid. Masukkan angka saja tanpa titik/koma (contoh: 3500000):"})
+    <div class="wa-header">
+        <div class="wa-avatar">HCI</div>
+        <div class="wa-info">
+            <h3>Simulasi Cicilan HCI</h3>
+            <p>online</p>
+        </div>
+    </div>
 
-    elif step == "GET_DP":
-        try:
-            dp = float(text)
-            harga = data["harga"]
-            if dp < 0 or dp >= harga:
-                return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ DP tidak valid (tidak boleh melebihi atau sama dengan Harga Barang). Masukkan nominal DP lain:"})
-            
-            sisa_pokok = harga - dp
-            if sisa_pokok < 500_000:
-                return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ Sisa pokok setelah DP minimal Rp 500.000. Masukkan nominal DP yang lain:"})
-            
-            data["dp"] = dp
-            info_tenor = "pilihan: 3, 6, 9, 12, 14 bulan" if 500_000 <= sisa_pokok <= 5_000_000 else "pilihan: 3, 6, 9, 12, 14, 15, 18, 21, 24 bulan"
-            
-            return jsonify({
-                "next_step": "GET_TENOR", "data": data,
-                "reply": f"✅ DP tercatat: <b>Rp {dp:,.0f}</b>\n\n⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan ({info_tenor})\n\n<i>(Contoh: 12 atau 14)</i>"
-            })
-        except ValueError:
-            return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ Format DP tidak valid. Masukkan angka saja (contoh: 500000 atau 0):"})
+    <div class="emoji-picker" id="emojiPicker">
+        <button class="emoji-item" type="button" onclick="addEmoji('😊')">😊</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('👍')">👍</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('🔥')">🔥</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('⭐')">⭐</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('🤝')">🤝</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('📱')">📱</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('💻')">💻</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('💸')">💸</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('✨')">✨</button>
+        <button class="emoji-item" type="button" onclick="addEmoji('🙏')">🙏</button>
+    </div>
 
-    elif step == "GET_TENOR":
-        try:
-            tenor_input = int(text)
-            harga = data["harga"]
-            dp = data["dp"]
-            sisa_pokok = harga - dp
-
-            pilihan_valid = [3, 6, 9, 12, 14] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 14, 15, 18, 21, 24]
-
-            if tenor_input not in pilihan_valid:
-                return jsonify({"next_step": "GET_TENOR", "data": data, "reply": f"⚠️ Tenor tidak ada di pilihan!\nSilakan masukkan tenor yang tersedia: ({', '.join(map(str, pilihan_valid))}) bulan."})
-
-            if tenor_input == 14:
-                tampilan_tenor = "14 Bulan (Free 2x)"
-                cicilan_per_bulan = harga / 12
-            else:
-                tampilan_tenor = f"{tenor_input} Bulan"
-                biaya_perlindungan = ambil_biaya_perlindungan(sisa_pokok)
-                biaya_admin = ambil_biaya_admin(sisa_pokok, tenor_input)
-                total_biaya_bulanan = 10_000 * tenor_input
-                
-                if 500_000 <= sisa_pokok <= 5_000_000:
-                    total_bunga = (sisa_pokok * 0.0225) * tenor_input
-                    total_keseluruhan = sisa_pokok + biaya_perlindungan + biaya_admin + total_biaya_bulanan + total_bunga
-                    cicilan_per_bulan = total_keseluruhan / tenor_input
-                else:
-                    total_pembiayaan = sisa_pokok + biaya_perlindungan + biaya_admin + total_biaya_bulanan
-                    cicilan_per_bulan = total_pembiayaan / tenor_input
-
-            pesan_wa = f"Halo Admin, saya ingin mengajukan cicilan Home Credit dengan rincian:\n- Harga Barang: Rp {harga:,.0f}\n- DP: Rp {dp:,.0f}\n- Tenor: {tampilan_tenor}\n- Cicilan: Rp {cicilan_per_bulan:,.0f} / bln"
-            url_wa = f"https://wa.me/6285935491278?text={pesan_wa.replace(' ', '%20').replace(chr(10), '%0A')}"
-
-            html_buttons = f"""
-            <div class="btn-group">
-                <a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a>
-                <button type="button" class="wa-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button>
+    <div class="wa-chat-container" id="chatContainer">
+        <div class="message bot">
+            ✨ <b>{{ salam }}</b> ✨<br><br>
+            🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+            📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
+            <i>(Contoh: 3.500.000 atau 3500000)</i>
+            <div class="message-meta">
+                <span class="time" id="initialTime"></span>
             </div>
-            """
+        </div>
+    </div>
 
-            pesan_hasil = (
-                "━━━━━━━━━━━━━━━━━━━━━━\n"
-                "📊  <b>HASIL SIMULASI CICILAN</b>  📊\n"
-                "🏢  <b>Home Credit Indonesia</b>\n"
-                "━━━━━━━━━━━━━━━━━━━━━━\n\n"
-                f"🏷️  <b>Harga Barang</b>  : Rp {harga:,.0f}\n"
-                f"💵  <b>Uang Muka (DP)</b> : Rp {dp:,.0f}\n"
-                f"📅  <b>Tenor Cicilan</b>  : {tampilan_tenor}\n\n"
-                "──────────────────────\n"
-                f"💳  <b>ESTIMASI CICILAN</b> :\n"
-                f"👉  <b>Rp {cicilan_per_bulan:,.0f} / bln</b>\n"
-                "──────────────────────\n\n"
-                "ℹ️  <b>Catatan Penting:</b>\n"
-                "• Besaran cicilan, bunga, & admin dapat bervariasi tergantung NIK dan profil akun masing-masing.\n"
-                "━━━━━━━━━━━━━━━━━━━━━━"
-            )
+    <div class="wa-input-area">
+        <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
+        <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
+        <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
+        <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
 
-            return jsonify({
-                "next_step": "DONE", "data": data, "loading": True,
-                "reply": pesan_hasil, "buttons": html_buttons, "reset": True
-            })
-        except ValueError:
-            return jsonify({"next_step": "GET_TENOR", "data": data, "reply": "⚠️ Masukkan angka bulat untuk jumlah bulan yang valid:"})
+    <script>
+        let step = 'GET_PRICE';
+        let dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
 
-    return jsonify({"next_step": "GET_PRICE", "data": data, "reply": "Silakan mulai ulang."})
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-    sage(); }
+        document.getElementById('initialTime').innerText = getCurrentTime();
+
+        const inputField = document.getElementById('userInput');
+        inputField.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { sendMessage(); }
         });
 
         function toggleEmojiPicker(e) {
@@ -166,7 +319,7 @@ if __name__ == "__main__":
         }
 
         function showInfoAttach() {
-            alert("ℹ️ Menu Lampiran (📎):\nKetik nominal Harga Barang atau DP secara langsung pada kolom chat untuk melanjutkan simulasi cicilan.");
+            alert("ℹ️ Menu Lampiran (📎):\\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom chat.");
         }
 
         document.addEventListener('click', function(e) {
@@ -261,7 +414,8 @@ def process():
             
             data["harga"] = harga
             return jsonify({
-                "next_step": "GET_DP", "data": data, 
+                "next_step": "GET_DP", 
+                "data": data, 
                 "reply": f"✅ Harga Barang tercatat: <b>Rp {harga:,.0f}</b>\n\n💵 Masukkan jumlah <b>Uang Muka (DP)</b> yang ingin dibayarkan\n\n<i>(Ketik 0 jika tanpa DP)</i>"
             })
         except ValueError:
@@ -282,7 +436,8 @@ def process():
             info_tenor = "pilihan: 3, 6, 9, 12, 14 bulan" if 500_000 <= sisa_pokok <= 5_000_000 else "pilihan: 3, 6, 9, 12, 14, 15, 18, 21, 24 bulan"
             
             return jsonify({
-                "next_step": "GET_TENOR", "data": data,
+                "next_step": "GET_TENOR", 
+                "data": data,
                 "reply": f"✅ DP tercatat: <b>Rp {dp:,.0f}</b>\n\n⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan ({info_tenor})\n\n<i>(Contoh: 12 atau 14)</i>"
             })
         except ValueError:
@@ -320,12 +475,7 @@ def process():
             pesan_wa = f"Halo Admin, saya ingin mengajukan cicilan Home Credit dengan rincian:\n- Harga Barang: Rp {harga:,.0f}\n- DP: Rp {dp:,.0f}\n- Tenor: {tampilan_tenor}\n- Cicilan: Rp {cicilan_per_bulan:,.0f} / bln"
             url_wa = f"https://wa.me/6285935491278?text={pesan_wa.replace(' ', '%20').replace(chr(10), '%0A')}"
 
-            html_buttons = f"""
-            <div class="btn-group">
-                <a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a>
-                <button class="wa-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button>
-            </div>
-            """
+            html_buttons = f'<div class="btn-group"><a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a><button type="button" class="wa-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button></div>'
 
             pesan_hasil = (
                 "━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -345,8 +495,12 @@ def process():
             )
 
             return jsonify({
-                "next_step": "DONE", "data": data, "loading": True,
-                "reply": pesan_hasil, "buttons": html_buttons, "reset": True
+                "next_step": "DONE", 
+                "data": data, 
+                "loading": True,
+                "reply": pesan_hasil, 
+                "buttons": html_buttons, 
+                "reset": True
             })
         except ValueError:
             return jsonify({"next_step": "GET_TENOR", "data": data, "reply": "⚠️ Masukkan angka bulat untuk jumlah bulan yang valid:"})
