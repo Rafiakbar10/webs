@@ -36,51 +36,73 @@ def get_salam_waktu() -> str:
     else:
         return "SELAMAT MALAM 🌙"
 
-# Template HTML & CSS yang disatukan langsung di dalam file app.py
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Cicilan HCI - WhatsApp</title>
+    <title>Simulasi Cicilan HCI - iPhone Style</title>
     <style>
         body {
-            background-color: #0b141a;
-            color: #e9edef;
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: #111b21;
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
             overflow: hidden;
         }
+
+        /* Bingkai / Frame ala iPhone */
+        .iphone-frame {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 880px;
+            background-color: #0b141a;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        @media (min-width: 480px) {
+            .iphone-frame {
+                border-radius: 40px;
+                border: 10px solid #272727;
+                height: 90vh;
+            }
+        }
+
+        /* Header WhatsApp */
         .wa-header {
             background-color: #202c33;
-            padding: 10px 15px;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
             border-bottom: 1px solid #222d34;
-            position: fixed;
-            top: 0;
-            width: 100%;
+            height: 60px;
             box-sizing: border-box;
-            z-index: 100;
+            z-index: 10;
         }
         .wa-avatar {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, #e65c00, #f9d423);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: white;
+            overflow: hidden;
             margin-right: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            border: 1px solid #00a884;
+        }
+        .wa-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .wa-info h3 {
             margin: 0;
@@ -94,33 +116,31 @@ HTML_TEMPLATE = """
             color: #00a884;
             font-weight: 500;
         }
+
+        /* Ruang Chat Wallpaper */
         .wa-chat-container {
             flex: 1;
-            margin-top: 62px;
-            margin-bottom: 70px;
-            padding: 15px 20px;
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             background-color: #0b141a;
             background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
-            background-size: 24px 24px;
-            max-width: 750px;
-            width: 100%;
-            align-self: center;
+            background-size: 20px 20px;
             box-sizing: border-box;
         }
+
         .message {
-            max-width: 82%;
-            padding: 10px 14px;
+            max-width: 85%;
+            padding: 9px 12px;
             border-radius: 8px;
-            font-size: 14.5px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.4;
             word-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
         }
         .message.bot {
             background-color: #202c33;
@@ -140,33 +160,35 @@ HTML_TEMPLATE = """
             align-items: center;
             justify-content: flex-end;
             gap: 4px;
-            margin-top: 4px;
+            margin-top: 3px;
             float: right;
-            margin-left: 12px;
+            margin-left: 10px;
         }
         .time {
-            font-size: 11px;
+            font-size: 10px;
             color: #8696a0;
         }
         .check-icon {
-            font-size: 13px;
+            font-size: 12px;
             color: #53bdeb;
             font-weight: bold;
         }
+
+        /* Tombol Aksi */
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 10px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -175,51 +197,49 @@ HTML_TEMPLATE = """
         .wa-btn:hover { background-color: #006c58; }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
         .wa-btn.whatsapp:hover { background-color: #009072; }
-        
+
+        /* Popup Emoji Picker */
         .emoji-picker {
             position: absolute;
-            bottom: 75px;
-            left: 15px;
+            bottom: 65px;
+            left: 10px;
             background-color: #202c33;
             border: 1px solid #2a3942;
             border-radius: 12px;
-            padding: 10px;
+            padding: 8px;
             display: none;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            z-index: 200;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 100;
         }
         .emoji-item {
             background: none;
             border: none;
-            font-size: 22px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 5px;
+            padding: 4px;
             border-radius: 6px;
         }
         .emoji-item:hover { background-color: #2a3942; }
 
+        /* Footer Input WhatsApp */
         .wa-input-area {
             background-color: #202c33;
-            padding: 10px 15px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            gap: 8px;
+            height: 60px;
             box-sizing: border-box;
-            max-width: 750px;
-            left: 50%;
-            transform: translateX(-50%);
             border-top: 1px solid #222d34;
+            z-index: 10;
         }
         .wa-input-area .icon-btn {
             background: none;
             border: none;
             color: #8696a0;
-            font-size: 22px;
+            font-size: 20px;
             cursor: pointer;
             padding: 0;
         }
@@ -227,68 +247,77 @@ HTML_TEMPLATE = """
             flex: 1;
             background-color: #2a3942;
             border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 20px;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
         }
         .wa-input-area input::placeholder { color: #8696a0; }
         .wa-input-area .send-btn {
             background-color: #00a884;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
+            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="wa-header">
-        <div class="wa-avatar">HCI</div>
-        <div class="wa-info">
-            <h3>Simulasi Cicilan HCI</h3>
-            <p>online</p>
-        </div>
-    </div>
-
-    <div class="emoji-picker" id="emojiPicker">
-        <button class="emoji-item" type="button" onclick="addEmoji('😊')">😊</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('👍')">👍</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('🔥')">🔥</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('⭐')">⭐</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('🤝')">🤝</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('📱')">📱</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('💻')">💻</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('💸')">💸</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('✨')">✨</button>
-        <button class="emoji-item" type="button" onclick="addEmoji('🙏')">🙏</button>
-    </div>
-
-    <div class="wa-chat-container" id="chatContainer">
-        <div class="message bot">
-            ✨ <b>{{ salam }}</b> ✨<br><br>
-            🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-            📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
-            <i>(Contoh: 3.500.000 atau 3500000)</i>
-            <div class="message-meta">
-                <span class="time" id="initialTime"></span>
+    <div class="iphone-frame">
+        <!-- Header -->
+        <div class="wa-header">
+            <div class="wa-avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=60" alt="Profil">
+            </div>
+            <div class="wa-info">
+                <h3>Simulasi Cicilan HCI</h3>
+                <p>online</p>
             </div>
         </div>
-    </div>
 
-    <div class="wa-input-area">
-        <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
-        <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
-        <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
-        <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+        <!-- Popup Emoji -->
+        <div class="emoji-picker" id="emojiPicker">
+            <button class="emoji-item" type="button" onclick="addEmoji('😊')">😊</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('👍')">👍</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('🔥')">🔥</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('⭐')">⭐</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('🤝')">🤝</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('📱')">📱</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('💻')">💻</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('💸')">💸</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('✨')">✨</button>
+            <button class="emoji-item" type="button" onclick="addEmoji('🙏')">🙏</button>
+        </div>
+
+        <!-- Ruang Chat -->
+        <div class="wa-chat-container" id="chatContainer">
+            <div class="message bot">
+                ✨ <b>{{ salam }}</b> ✨<br><br>
+                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
+                <i>(Contoh: 3.500.000 atau 3500000)</i>
+                <div class="message-meta">
+                    <span class="time" id="initialTime"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Area Input -->
+        <div class="wa-input-area">
+            <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
+            <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
+            <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
+            <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
     </div>
 
     <script>
