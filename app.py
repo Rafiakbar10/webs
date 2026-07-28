@@ -46,18 +46,20 @@ HTML_TEMPLATE = """
     <style>
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         html, body {
             background-color: #0b141a;
             margin: 0;
             padding: 0;
             width: 100%;
+            height: 100%;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Kontainer Utama Flexbox agar input selalu di bawah */
         .wa-mobile-container {
             width: 100%;
             height: 100%;
@@ -66,12 +68,9 @@ HTML_TEMPLATE = """
             background-color: #0b141a;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            height: 100vh;
-            height: 100dvh;
+            position: relative;
         }
 
-        /* Header WhatsApp */
         .wa-header {
             background-color: #202c33;
             padding: 8px 12px;
@@ -80,7 +79,6 @@ HTML_TEMPLATE = """
             justify-content: space-between;
             height: 56px;
             flex-shrink: 0;
-            z-index: 10;
             color: #aebac1;
         }
         .wa-header-left {
@@ -118,7 +116,6 @@ HTML_TEMPLATE = """
             font-size: 18px;
         }
 
-        /* Ruang Chat Wallpaper yang bisa di-scroll */
         .wa-chat-container {
             flex: 1;
             padding: 12px 15px;
@@ -131,7 +128,6 @@ HTML_TEMPLATE = """
             background-size: 24px 24px;
         }
 
-        /* Kotak Enkripsi Kuning */
         .encryption-notice {
             background-color: #182229;
             color: #ffd279;
@@ -158,7 +154,6 @@ HTML_TEMPLATE = """
             flex-shrink: 0;
         }
 
-        /* Gelembung Pesan */
         .message {
             max-width: 82%;
             padding: 8px 12px;
@@ -201,7 +196,6 @@ HTML_TEMPLATE = """
             font-weight: bold;
         }
 
-        /* Tombol Aksi */
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -219,47 +213,42 @@ HTML_TEMPLATE = """
             font-weight: 500;
             text-align: center;
             text-decoration: none;
-            transition: background 0.2s;
         }
-        .wa-btn:hover { background-color: #006c58; }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
-        .wa-btn.whatsapp:hover { background-color: #009072; }
 
-        /* Popup Emoji Picker */
         .emoji-picker {
             position: absolute;
-            bottom: 65px;
+            bottom: 70px;
             left: 10px;
             background-color: #202c33;
             border: 1px solid #2a3942;
             border-radius: 12px;
-            padding: 8px;
+            padding: 10px;
             display: none;
             grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            z-index: 100;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            z-index: 999;
         }
         .emoji-item {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
-            padding: 4px;
+            padding: 6px;
             border-radius: 6px;
         }
-        .emoji-item:hover { background-color: #2a3942; }
+        .emoji-item:active { background-color: #374248; }
 
-        /* Footer Input WhatsApp Android */
         .wa-input-area {
             background-color: #0b141a;
             padding: 8px 10px;
             display: flex;
             align-items: center;
             gap: 8px;
-            height: 60px;
+            height: 64px;
             flex-shrink: 0;
-            z-index: 10;
+            z-index: 100;
         }
         .input-wrapper {
             flex: 1;
@@ -269,7 +258,7 @@ HTML_TEMPLATE = """
             border-radius: 24px;
             padding: 0 12px;
             gap: 8px;
-            height: 44px;
+            height: 46px;
         }
         .wa-input-area .icon-btn {
             background: none;
@@ -277,7 +266,7 @@ HTML_TEMPLATE = """
             color: #8696a0;
             font-size: 20px;
             cursor: pointer;
-            padding: 0;
+            padding: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -287,17 +276,16 @@ HTML_TEMPLATE = """
             background: transparent;
             border: none;
             color: white;
-            font-size: 15px;
+            font-size: 16px;
             outline: none;
         }
         .wa-input-area input::placeholder { color: #8696a0; }
         
-        /* Tombol Mikrofon / Kirim Bulat */
         .mic-send-btn {
             background-color: #00a884;
             border: none;
-            width: 44px;
-            height: 44px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
@@ -313,7 +301,6 @@ HTML_TEMPLATE = """
 <body>
 
     <div class="wa-mobile-container">
-        <!-- Header WhatsApp Android -->
         <div class="wa-header">
             <div class="wa-header-left">
                 <span class="back-arrow">←</span>
@@ -329,7 +316,6 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Popup Emoji -->
         <div class="emoji-picker" id="emojiPicker">
             <button class="emoji-item" type="button" onclick="addEmoji('😊')">😊</button>
             <button class="emoji-item" type="button" onclick="addEmoji('👍')">👍</button>
@@ -343,7 +329,6 @@ HTML_TEMPLATE = """
             <button class="emoji-item" type="button" onclick="addEmoji('🙏')">🙏</button>
         </div>
 
-        <!-- Ruang Chat -->
         <div class="wa-chat-container" id="chatContainer">
             <div class="encryption-notice">
                 🔒 Pesan dan telepon terenkripsi secara end-to-end. Hanya orang di obrolan ini yang bisa membaca, mendengarkan, atau membagikannya. <b>Pelajari selengkapnya.</b>
@@ -361,15 +346,14 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Area Input WhatsApp Android (Flexbox Bawah) -->
         <div class="wa-input-area">
             <div class="input-wrapper">
-                <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
+                <button type="button" class="icon-btn" id="emojiBtn">😊</button>
                 <input type="text" id="userInput" placeholder="Pesan" autocomplete="off">
-                <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
-                <button type="button" class="icon-btn" onclick="showInfoAttach()">📷</button>
+                <button type="button" class="icon-btn" id="attachBtn">📎</button>
+                <button type="button" class="icon-btn" id="camBtn">📷</button>
             </div>
-            <button type="button" class="mic-send-btn" id="sendMicBtn" onclick="handleSendAction()">🎤</button>
+            <button type="button" class="mic-send-btn" id="sendMicBtn">🎤</button>
         </div>
     </div>
 
@@ -385,6 +369,10 @@ HTML_TEMPLATE = """
 
         const inputField = document.getElementById('userInput');
         const sendMicBtn = document.getElementById('sendMicBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const attachBtn = document.getElementById('attachBtn');
+        const camBtn = document.getElementById('camBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
 
         inputField.addEventListener("input", function() {
             if (inputField.value.trim().length > 0) {
@@ -395,8 +383,14 @@ HTML_TEMPLATE = """
         });
 
         inputField.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { handleSendAction(); }
+            if (event.key === "Enter") { 
+                handleSendAction(); 
+            }
         });
+
+        sendMicBtn.onclick = function() {
+            handleSendAction();
+        };
 
         function handleSendAction() {
             if (inputField.value.trim().length > 0) {
@@ -406,27 +400,29 @@ HTML_TEMPLATE = """
             }
         }
 
-        function toggleEmojiPicker(e) {
+        emojiBtn.onclick = function(e) {
             e.stopPropagation();
-            const picker = document.getElementById('emojiPicker');
-            picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
-        }
+            emojiPicker.style.display = emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+        };
 
-        function addEmoji(emoji) {
+        window.addEmoji = function(emoji) {
             inputField.value += emoji;
-            document.getElementById('emojiPicker').style.display = 'none';
+            emojiPicker.style.display = 'none';
             inputField.focus();
             sendMicBtn.innerHTML = "➤";
-        }
+        };
 
-        function showInfoAttach() {
-            alert("ℹ️ Menu Tambahan:\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom pesan.");
-        }
+        attachBtn.onclick = function() {
+            alert("ℹ️ Menu Lampiran:\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom pesan.");
+        };
+
+        camBtn.onclick = function() {
+            alert("ℹ️ Menu Kamera:\nFitur kirim foto belum aktif. Silakan ketik nominal pesanan.");
+        };
 
         document.addEventListener('click', function(e) {
-            const picker = document.getElementById('emojiPicker');
-            if (!e.target.closest('.emoji-picker') && !e.target.closest('.icon-btn')) {
-                picker.style.display = 'none';
+            if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                emojiPicker.style.display = 'none';
             }
         });
 
@@ -460,7 +456,7 @@ HTML_TEMPLATE = """
             appendMessage(text, 'user');
             inputField.value = '';
             sendMicBtn.innerHTML = "🎤";
-            document.getElementById('emojiPicker').style.display = 'none';
+            emojiPicker.style.display = 'none';
 
             try {
                 const response = await fetch('/process', {
