@@ -77,7 +77,7 @@ def process():
                 return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ Sisa pokok setelah DP minimal Rp 500.000. Masukkan nominal DP yang lain:"})
             
             data["dp"] = dp
-            info_tenor = "pilihan: 3, 6, 9, 12, 14 bulan" if 500_000 <= sisa_pokok <= 5_000_000 else "pilihan: 3, 6, 9, 12, 14, 15, 18, 21, 24 bulan"
+            info_tenor = "pilihan: 3, 6, 9, 12 bulan" if 500_000 <= sisa_pokok <= 5_000_000 else "pilihan: 3, 6, 9, 12, 15, 18, 21, 24 bulan"
             
             return jsonify({
                 "next_step": "GET_TENOR", 
