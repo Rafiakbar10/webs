@@ -181,21 +181,18 @@
             flex-shrink: 0;
         }
 
+        /* MEMBUAT TEKS RATA KIRI, UKURAN PAS, DAN TIDAK KEBESARAN */
         .message {
-            max-width: 85%;
-            padding: 10px 14px;
+            max-width: 82%;
+            padding: 9px 12px;
             border-radius: 7.5px;
             font-size: 14.5px;
-            line-height: 1.5;
+            line-height: 1.45;
             word-wrap: break-word;
             position: relative;
+            white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
             text-align: left !important;
-        }
-        .message-content {
-            display: inline-block;
-            text-align: left !important;
-            width: 100%;
         }
         .message.bot {
             background-color: #202c33;
@@ -214,9 +211,9 @@
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
-            margin-top: 4px;
+            margin-top: 3px;
             float: right;
-            margin-left: 10px;
+            margin-left: 8px;
         }
         .time {
             font-size: 10.5px;
@@ -259,16 +256,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -415,20 +412,12 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka Sesuai Keinginan Kakak -->
+            <!-- Pesan Pembuka Pertama (Rata Kiri, Rapi, & Ukuran Pas) -->
             <div class="message bot">
-                <div class="message-content">
-                    🌙 <b>{{ salam }}</b>
-                    <br><br>━━━━━━━━━━━━━━━
-                    <br>🏢 <b>HOME CREDIT INDONESIA</b>
-                    <br>━━━━━━━━━━━━━━━
-                    <br><br>Halo Kak! 👋
-                    <br>Selamat datang di layanan <b>Simulasi Cicilan Home Credit Indonesia.</b>
-                    <br><br>📦 <b>Masukkan harga barang</b> yang ingin dihitung cicilannya.
-                    <br><br>💡 <i>Contoh:</i>
-                    <br>• 3.500.000
-                    <br>• 3500000
-                </div>
+                ✨ <b>{{ salam }}</b> ✨<br><br>
+                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
+                <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
                 </div>
@@ -528,7 +517,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru
+        // Fungsi Tombol Hitung Simulasi Baru (Otomatis menyesuaikan waktu sapaan lokal dengan rapi)
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
@@ -540,12 +529,12 @@
                 subStatus.innerText = "online";
 
                 const jam = new Date().getHours();
-                let salamWaktu = "SELAMAT MALAM 🌙";
-                if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI 🌅";
-                else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG ☀️";
-                else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE 🌇";
+                let salamWaktu = "SELAMAT MALAM";
+                if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI";
+                else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG";
+                else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE";
 
-                const pesanBaru = `🌙 <b>${salamWaktu}</b><br><br>━━━━━━━━━━━━━━━<br>🏢 <b>HOME CREDIT INDONESIA</b><br>━━━━━━━━━━━━━━━<br><br>Halo Kak! 👋<br>Selamat datang di layanan <b>Simulasi Cicilan Home Credit Indonesia.</b><br><br>📦 <b>Masukkan harga barang</b> yang ingin dihitung cicilannya.<br><br>💡 <i>Contoh:</i><br>• 3.500.000<br>• 3500000`;
+                const pesanBaru = `✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
                 appendMessage(pesanBaru, 'bot');
             }, 1000);
         };
@@ -556,7 +545,11 @@
             msgDiv.className = `message ${sender}`;
             
             if(sender === 'bot') {
-                msgDiv.innerHTML = `<div class="message-content">${text}</div>` + htmlButtons + `<div class="message-meta"><span class="time">${getCurrentTime()}</span></div>`;
+                msgDiv.innerHTML = text + htmlButtons;
+                const meta = document.createElement('div');
+                meta.className = 'message-meta';
+                meta.innerHTML = `<span class="time">${getCurrentTime()}</span>`;
+                msgDiv.appendChild(meta);
             } else {
                 msgDiv.innerText = text;
                 const meta = document.createElement('div');
