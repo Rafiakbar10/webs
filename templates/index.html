@@ -181,10 +181,10 @@
             flex-shrink: 0;
         }
 
-        /* Pesan Chat Rata Kiri & Rapi */
+        /* Pesan Chat Rata Kiri Sejajar */
         .message {
-            max-width: 85%;
-            padding: 10px 14px;
+            max-width: 88%;
+            padding: 12px 14px;
             border-radius: 7.5px;
             font-size: 14.5px;
             line-height: 1.5;
@@ -413,13 +413,14 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka yang Rapi & Rata Kiri -->
+            <!-- Pesan Pembuka yang Sejajar ke Samping & Rapi -->
             <div class="message bot">
-                ✨ <b>{{ salam }}</b><br>
                 ━━━━━━━━━━━━━━━━━━━<br>
-                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin Anda hitung:<br><br>
-                <i>Contoh: 3.500.000 atau 3500000</i>
+                ✨ <b>{{ salam }}</b><br>
+                🏢 <b>Home Credit Indonesia</b><br>
+                ━━━━━━━━━━━━━━━━━━━<br><br>
+                📦 <b>Silakan ketik dan kirimkan Harga Barang yang ingin Anda hitung:</b><br><br>
+                <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
                 </div>
@@ -519,7 +520,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru yang rapi & responsif
+        // Fungsi Tombol Hitung Simulasi Baru yang rapi sejajar ke samping
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
@@ -528,7 +529,7 @@
             setTimeout(() => {
                 removeTypingBubble(typingId);
                 subStatus.innerText = "online";
-                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b><br>━━━━━━━━━━━━━━━━━━━<br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin Anda hitung:<br><br><i>Contoh: 3.500.000 atau 3500000</i>`;
+                const pesanBaru = `━━━━━━━━━━━━━━━━━━━<br>📦 <b>Silakan ketik dan kirimkan Harga Barang baru yang ingin Anda hitung:</b><br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
                 appendMessage(pesanBaru, 'bot');
             }, 1000);
         };
