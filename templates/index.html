@@ -217,6 +217,7 @@
         }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
 
+        /* Popup Emoji Picker Interaktif */
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -328,18 +329,18 @@
             </div>
         </div>
 
-        <!-- Popup Emoji -->
+        <!-- Popup Emoji Interaktif Pintar -->
         <div class="emoji-picker" id="emojiPicker">
-            <button class="emoji-item" type="button" onclick="addEmoji('😊')">😊</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('👍')">👍</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('🔥')">🔥</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('⭐')">⭐</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('🤝')">🤝</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('📱')">📱</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('💻')">💻</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('💸')">💸</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('✨')">✨</button>
-            <button class="emoji-item" type="button" onclick="addEmoji('🙏')">🙏</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('😊', 'Halo Kak! Senang bisa melayani Anda. 😊')">😊</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('👍', 'Mantap sekali Kak! 👍 Silakan lanjut masukkan data cicilannya ya.')">👍</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🔥', 'Semangat Kak! 🔥 Kita hitung simulasi cicilan terbaik hari ini.')">🔥</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('⭐', 'Terima kasih rating bintangnya Kak! ⭐ Pelayanan terbaik untuk Anda.')">⭐</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🤝', 'Kerja sama yang baik Kak! 🤝 Silakan lanjutkan simulasinya.')">🤝</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('📱', 'Mau ambil gadget/HP apa nih Kak? 📱 Yuk hitung cicilannya di sini!')">📱</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('💻', 'Mau ambil laptop atau elektronik impian Kak? 💻 Silakan masukkan harganya.')">💻</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('💸', 'Cicilan ringan & aman bersama Home Credit! 💸')">💸</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('✨', 'Wwwhii asik banget ada promo menarik nih! ✨')">✨</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🙏', 'Terima kasih banyak ya Kak! 🙏 Semoga harinya menyenangkan.')">🙏</button>
         </div>
 
         <!-- Ruang Chat -->
@@ -405,10 +406,17 @@
             dropdownMenu.style.display = 'none';
         };
 
-        window.addEmoji = function(emoji) {
-            inputField.value += emoji;
+        // Fungsi khusus ketika emoji diklik: langsung kirim reaksi dan balas kata-kata interaktif
+        window.sendEmojiReaction = function(emoji, responseText) {
             emojiPicker.style.display = 'none';
-            inputField.focus();
+            
+            // Tampilkan pesan emoji dari user
+            appendMessage(emoji, 'user');
+
+            // Berikan efek seolah-olah bot sedang mengetik / merespons kata-kata bagus
+            setTimeout(() => {
+                appendMessage(responseText, 'bot');
+            }, 500);
         };
 
         attachBtn.onclick = function() {
@@ -430,18 +438,11 @@
             }
         });
 
-        // Fungsi Hitung Simulasi Baru tanpa menghapus chat lama
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
-            
-            // Ambil salam waktu terbaru via fetch atau teks lokal
-            fetch('/')
-                .then(res => res.text())
-                .then(() => {
-                    const pesanBaru = `✨ <b>SELAMAT BARU</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang</b> baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
-                    appendMessage(pesanBaru, 'bot');
-                });
+            const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+            appendMessage(pesanBaru, 'bot');
         };
 
         function appendMessage(text, sender, htmlButtons = '') {
