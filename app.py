@@ -44,49 +44,42 @@ HTML_TEMPLATE = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WhatsApp - Simulasi Cicilan HCI</title>
     <style>
-        body {
+        html, body {
             background-color: #0b141a;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Kontainer Utama Full Layar ala WhatsApp HP */
+        /* Kontainer Utama Full Layar ala WhatsApp Android */
         .wa-mobile-container {
             width: 100%;
             height: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            margin: 0 auto;
             background-color: #0b141a;
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
-        @media (min-width: 500px) {
-            .wa-mobile-container {
-                height: 92vh;
-                max-height: 850px;
-                border-radius: 16px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-                border: 1px solid #222d34;
-            }
-        }
-
-        /* Header WhatsApp Android Asli */
+        /* Header WhatsApp */
         .wa-header {
             background-color: #202c33;
-            padding: 10px 12px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 60px;
+            height: 56px;
             box-sizing: border-box;
+            flex-shrink: 0;
             z-index: 10;
             color: #aebac1;
         }
@@ -101,15 +94,15 @@ HTML_TEMPLATE = """
             color: #aebac1;
         }
         .wa-avatar {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             background-color: #6a5acd;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             color: white;
         }
         .wa-contact-name {
@@ -121,14 +114,14 @@ HTML_TEMPLATE = """
         .wa-header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 18px;
             font-size: 18px;
         }
         .wa-header-right span {
             cursor: pointer;
         }
 
-        /* Ruang Chat dengan Wallpaper Doodle Khas WhatsApp */
+        /* Ruang Chat Wallpaper */
         .wa-chat-container {
             flex: 1;
             padding: 12px 15px;
@@ -137,7 +130,6 @@ HTML_TEMPLATE = """
             flex-direction: column;
             gap: 12px;
             background-color: #0b141a;
-            /* Pola Doodle Wallpaper WA */
             background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
             background-size: 24px 24px;
             box-sizing: border-box;
@@ -147,14 +139,15 @@ HTML_TEMPLATE = """
         .encryption-notice {
             background-color: #182229;
             color: #ffd279;
-            font-size: 11.5px;
+            font-size: 11px;
             text-align: center;
             padding: 10px 14px;
             border-radius: 8px;
-            margin: 4px auto 10px auto;
-            max-width: 90%;
+            margin: 2px auto 8px auto;
+            max-width: 92%;
             line-height: 1.4;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
 
         .chat-date-badge {
@@ -164,8 +157,9 @@ HTML_TEMPLATE = """
             padding: 5px 10px;
             border-radius: 6px;
             align-self: center;
-            margin: 6px 0;
+            margin: 4px 0;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
 
         /* Gelembung Pesan */
@@ -260,7 +254,7 @@ HTML_TEMPLATE = """
         }
         .emoji-item:hover { background-color: #2a3942; }
 
-        /* Footer Input WhatsApp Android */
+        /* Footer Input WhatsApp Android (Selalu Terkunci di Bawah) */
         .wa-input-area {
             background-color: #0b141a;
             padding: 8px 10px;
@@ -269,6 +263,7 @@ HTML_TEMPLATE = """
             gap: 8px;
             height: 60px;
             box-sizing: border-box;
+            flex-shrink: 0;
             z-index: 10;
         }
         .input-wrapper {
@@ -302,7 +297,7 @@ HTML_TEMPLATE = """
         }
         .wa-input-area input::placeholder { color: #8696a0; }
         
-        /* Tombol Mikrofon / Kirim Bulat di Ujung Kanan */
+        /* Tombol Mikrofon / Kirim Bulat */
         .mic-send-btn {
             background-color: #00a884;
             border: none;
@@ -371,7 +366,7 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Area Input WhatsApp Android (Kotak dengan Emoji, Lampiran, Kamera, & Mic/Kirim) -->
+        <!-- Area Input WhatsApp Android (Terkunci Pas di Bawah) -->
         <div class="wa-input-area">
             <div class="input-wrapper">
                 <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
@@ -396,7 +391,6 @@ HTML_TEMPLATE = """
         const inputField = document.getElementById('userInput');
         const sendMicBtn = document.getElementById('sendMicBtn');
 
-        // Ubah ikon tombol kanan dari Mic (🎤) menjadi Kirim (➤) saat mulai mengetik
         inputField.addEventListener("input", function() {
             if (inputField.value.trim().length > 0) {
                 sendMicBtn.innerHTML = "➤";
