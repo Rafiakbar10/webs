@@ -181,16 +181,18 @@
             flex-shrink: 0;
         }
 
+        /* Pesan WhatsApp (Rata Kiri, Rapi, & Profesional) */
         .message {
-            max-width: 82%;
-            padding: 9px 12px;
+            max-width: 85%;
+            padding: 10px 14px;
             border-radius: 7.5px;
             font-size: 14.5px;
-            line-height: 1.45;
+            line-height: 1.5;
             word-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
+            text-align: left;
         }
         .message.bot {
             background-color: #202c33;
@@ -209,9 +211,9 @@
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
-            margin-top: 3px;
+            margin-top: 4px;
             float: right;
-            margin-left: 8px;
+            margin-left: 10px;
         }
         .time {
             font-size: 10.5px;
@@ -255,16 +257,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 9px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -412,9 +414,9 @@
             <div class="chat-date-badge">Hari ini</div>
 
             <div class="message bot">
-                ✨ <b>{{ salam }}</b> ✨<br><br>
+                ✨ <b>{{ salam }}</b><br><br>
                 🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan ketik dan kirimkan Harga Barang yang ingin anda hitung:<br><br>
+                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
                 <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
@@ -515,7 +517,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru tanpa menghapus chat lama
+        // Fungsi Tombol Hitung Simulasi Baru yang rapi & responsif
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
