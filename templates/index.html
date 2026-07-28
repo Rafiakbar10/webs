@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WhatsApp - Simulasi Cicilan HCI</title>
+    <title>WA Simulasi</title>
     <style>
         * {
             box-sizing: border-box;
@@ -365,8 +365,8 @@
         <!-- Header WhatsApp -->
         <div class="wa-header">
             <div class="wa-header-left">
-                <span class="back-arrow" onclick="alert('Yah lagi ga bisa keluar dari halaman ini 😂😂😂🙏')">←</span>
-                <div class="wa-avatar" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">HCI</div>
+                <span class="back-arrow" onclick="alert('𝕐𝕒𝕙 𝕝𝕒𝕘𝕚 𝕘𝕒 𝕓𝕚𝕤𝕒 𝕜𝕖𝕝𝕦𝕒𝕣 𝕕𝕒𝕣𝕚 𝕙𝕒𝕝𝕒𝕞𝕒𝕟 𝕚𝕟𝕚😂😂🙏')">←</span>
+                <div class="wa-avatar" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">🔥</div>
                 <div class="wa-contact-info" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">
                     <h3 class="wa-contact-name" id="headerStatus">Simulasi</h3>
                     <p id="subStatus">online</p>
@@ -462,7 +462,7 @@
             setTimeout(() => {
                 removeTypingBubble(typingId1);
                 subStatus.innerText = "online";
-                appendMessage(`✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b>`, 'bot');
+                appendMessage(`✨ <b>${salamWaktu}</b> ✨<br>`, 'bot');
 
                 // Chat 2: Masukkan harga barang dan contohnya
                 const typingId2 = showTypingBubble();
@@ -471,7 +471,7 @@
                 setTimeout(() => {
                     removeTypingBubble(typingId2);
                     subStatus.innerText = "online";
-                    appendMessage(`📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`, 'bot');
+                    appendMessage(`📦 Silakan masukkan Harga Barang yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`, 'bot');
                 }, 1200);
 
             }, 1000);
