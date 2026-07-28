@@ -181,7 +181,7 @@
             flex-shrink: 0;
         }
 
-        /* Pesan WhatsApp (Rata Kiri, Rapi, & Profesional) */
+        /* Pesan Chat Rata Kiri & Rapi */
         .message {
             max-width: 85%;
             padding: 10px 14px;
@@ -413,11 +413,13 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
+            <!-- Pesan Pembuka yang Rapi & Rata Kiri -->
             <div class="message bot">
-                ✨ <b>{{ salam }}</b><br><br>
+                ✨ <b>{{ salam }}</b><br>
+                ━━━━━━━━━━━━━━━━━━━<br>
                 🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
-                <i>(Contoh: 3.500.000 atau 3500000)</i>
+                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin Anda hitung:<br><br>
+                <i>Contoh: 3.500.000 atau 3500000</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
                 </div>
@@ -526,7 +528,7 @@
             setTimeout(() => {
                 removeTypingBubble(typingId);
                 subStatus.innerText = "online";
-                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b><br>━━━━━━━━━━━━━━━━━━━<br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin Anda hitung:<br><br><i>Contoh: 3.500.000 atau 3500000</i>`;
                 appendMessage(pesanBaru, 'bot');
             }, 1000);
         };
