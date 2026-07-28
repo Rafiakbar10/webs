@@ -117,6 +117,34 @@
             background-color: #182229;
         }
 
+        /* Popup Lampiran (📎) ala WhatsApp */
+        .attachment-popup {
+            position: absolute;
+            bottom: 70px;
+            left: 15px;
+            background-color: #233138;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            display: none;
+            flex-direction: column;
+            padding: 8px 0;
+            z-index: 1000;
+            width: 220px;
+        }
+        .attachment-item {
+            padding: 12px 18px;
+            color: #e9edef;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .attachment-item:hover {
+            background-color: #182229;
+        }
+
         .wa-chat-container {
             flex: 1;
             padding: 12px 15px;
@@ -217,7 +245,7 @@
         }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
 
-        /* Popup Emoji Picker Interaktif */
+        /* Popup Emoji Picker */
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -261,6 +289,7 @@
             padding: 0 12px;
             gap: 8px;
             height: 46px;
+            position: relative;
         }
         .wa-input-area .icon-btn {
             background: none;
@@ -329,7 +358,7 @@
             </div>
         </div>
 
-        <!-- Popup Emoji Interaktif Pintar -->
+        <!-- Popup Emoji Interaktif -->
         <div class="emoji-picker" id="emojiPicker">
             <button class="emoji-item" type="button" onclick="sendEmojiReaction('😊', 'Halo Kak! Senang bisa melayani Anda. 😊')">😊</button>
             <button class="emoji-item" type="button" onclick="sendEmojiReaction('👍', 'Mantap sekali Kak! 👍 Silakan lanjut masukkan data cicilannya ya.')">👍</button>
@@ -341,6 +370,14 @@
             <button class="emoji-item" type="button" onclick="sendEmojiReaction('💸', 'Cicilan ringan & aman bersama Home Credit! 💸')">💸</button>
             <button class="emoji-item" type="button" onclick="sendEmojiReaction('✨', 'Wwwhii asik banget ada promo menarik nih! ✨')">✨</button>
             <button class="emoji-item" type="button" onclick="sendEmojiReaction('🙏', 'Terima kasih banyak ya Kak! 🙏 Semoga harinya menyenangkan.')">🙏</button>
+        </div>
+
+        <!-- Popup Menu Lampiran (📎) -->
+        <div class="attachment-popup" id="attachmentPopup">
+            <div class="attachment-item" onclick="selectAttachment('📄 Syarat Pengajuan: Cukup KTP Asli + Usia minimal 19 tahun.')">📄 <span>Syarat Pengajuan</span></div>
+            <div class="attachment-item" onclick="selectAttachment('🏷️ Info Promo: Nikmati cicilan bunga ringan & promo Free 2x Angsuran!')">🏷️ <span>Info Promo</span></div>
+            <div class="attachment-item" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">📍 <span>Lokasi Toko Partner</span></div>
+            <div class="attachment-item" onclick="window.open('https://wa.me/6285935491278', '_blank')">💬 <span>Hubungi CS WhatsApp</span></div>
         </div>
 
         <!-- Ruang Chat -->
@@ -387,6 +424,7 @@
         const emojiBtn = document.getElementById('emojiBtn');
         const attachBtn = document.getElementById('attachBtn');
         const emojiPicker = document.getElementById('emojiPicker');
+        const attachmentPopup = document.getElementById('attachmentPopup');
         const menuToggle = document.getElementById('menuToggle');
         const dropdownMenu = document.getElementById('dropdownMenu');
 
@@ -403,35 +441,43 @@
         emojiBtn.onclick = function(e) {
             e.stopPropagation();
             emojiPicker.style.display = emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+            attachmentPopup.style.display = 'none';
             dropdownMenu.style.display = 'none';
         };
 
-        // Fungsi khusus ketika emoji diklik: langsung kirim reaksi dan balas kata-kata interaktif
+        attachBtn.onclick = function(e) {
+            e.stopPropagation();
+            attachmentPopup.style.display = attachmentPopup.style.display === 'flex' ? 'none' : 'flex';
+            emojiPicker.style.display = 'none';
+            dropdownMenu.style.display = 'none';
+        };
+
+        window.selectAttachment = function(infoText) {
+            attachmentPopup.style.display = 'none';
+            appendMessage(infoText, 'bot');
+        };
+
         window.sendEmojiReaction = function(emoji, responseText) {
             emojiPicker.style.display = 'none';
-            
-            // Tampilkan pesan emoji dari user
             appendMessage(emoji, 'user');
-
-            // Berikan efek seolah-olah bot sedang mengetik / merespons kata-kata bagus
             setTimeout(() => {
                 appendMessage(responseText, 'bot');
             }, 500);
-        };
-
-        attachBtn.onclick = function() {
-            alert("ℹ️ Menu Lampiran:\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom pesan.");
         };
 
         menuToggle.onclick = function(e) {
             e.stopPropagation();
             dropdownMenu.style.display = dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
             emojiPicker.style.display = 'none';
+            attachmentPopup.style.display = 'none';
         };
 
         document.addEventListener('click', function(e) {
             if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
                 emojiPicker.style.display = 'none';
+            }
+            if (!attachmentPopup.contains(e.target) && e.target !== attachBtn) {
+                attachmentPopup.style.display = 'none';
             }
             if (!dropdownMenu.contains(e.target) && e.target !== menuToggle) {
                 dropdownMenu.style.display = 'none';
@@ -475,6 +521,7 @@
             appendMessage(text, 'user');
             inputField.value = '';
             emojiPicker.style.display = 'none';
+            attachmentPopup.style.display = 'none';
             dropdownMenu.style.display = 'none';
 
             try {
