@@ -181,21 +181,21 @@
             flex-shrink: 0;
         }
 
+        /* PERBAIKAN: Lebar dan perataan pesan disamakan agar rapi dan proporsional */
         .message {
-            max-width: 85%;
-            padding: 10px 14px;
+            width: fit-content;
+            max-width: 82%;
+            padding: 9px 12px;
             border-radius: 7.5px;
             font-size: 14.5px;
-            line-height: 1.5;
+            line-height: 1.45;
             word-wrap: break-word;
             position: relative;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
-            text-align: left !important;
+            text-align: left;
         }
         .message-content {
-            display: inline-block;
-            text-align: left !important;
-            width: 100%;
+            text-align: left;
         }
         .message.bot {
             background-color: #202c33;
@@ -210,13 +210,14 @@
             border-top-right-radius: 0;
         }
         .message-meta {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
-            margin-top: 4px;
+            margin-top: 3px;
             float: right;
-            margin-left: 10px;
+            margin-left: 12px;
+            vertical-align: bottom;
         }
         .time {
             font-size: 10.5px;
@@ -259,16 +260,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -415,7 +416,7 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Tampilan Pesan Pembuka Sesuai Keinginan Anda (Persis Seperti Screenshot) -->
+            <!-- Pesan Pembuka Pertama (Tampilan Dibuat Proporsional & Rapi) -->
             <div class="message bot">
                 <div class="message-content">
                     ✨ <b>{{ salam }}</b> ✨<br><br>
@@ -522,7 +523,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru (Mengikuti Format Sapaan yang Sama)
+        // Fungsi Tombol Hitung Simulasi Baru
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
