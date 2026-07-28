@@ -181,20 +181,16 @@
             flex-shrink: 0;
         }
 
-        /* PERBAIKAN: Lebar dan perataan pesan disamakan agar rapi dan proporsional */
         .message {
-            width: fit-content;
-            max-width: 82%;
+            max-width: 85%;
             padding: 9px 12px;
             border-radius: 7.5px;
             font-size: 14.5px;
             line-height: 1.45;
             word-wrap: break-word;
             position: relative;
+            white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
-            text-align: left;
-        }
-        .message-content {
             text-align: left;
         }
         .message.bot {
@@ -210,14 +206,13 @@
             border-top-right-radius: 0;
         }
         .message-meta {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
             margin-top: 3px;
             float: right;
-            margin-left: 12px;
-            vertical-align: bottom;
+            margin-left: 8px;
         }
         .time {
             font-size: 10.5px;
@@ -416,14 +411,12 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka Pertama (Tampilan Dibuat Proporsional & Rapi) -->
+            <!-- Pesan Pembuka Pertama yang Disamakan Persis -->
             <div class="message bot">
-                <div class="message-content">
-                    ✨ <b>{{ salam }}</b> ✨<br><br>
-                    🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                    📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
-                    <i>(Contoh: 3.500.000 atau 3500000)</i>
-                </div>
+                ✨ <b>{{ salam }}</b> ✨<br><br>
+                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
+                <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
                 </div>
@@ -533,14 +526,7 @@
             setTimeout(() => {
                 removeTypingBubble(typingId);
                 subStatus.innerText = "online";
-
-                const jam = new Date().getHours();
-                let salamWaktu = "SELAMAT MALAM";
-                if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI";
-                else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG";
-                else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE";
-
-                const pesanBaru = `✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                const pesanBaru = `✨ <b>SELAMAT MALAM</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
                 appendMessage(pesanBaru, 'bot');
             }, 1000);
         };
@@ -551,7 +537,11 @@
             msgDiv.className = `message ${sender}`;
             
             if(sender === 'bot') {
-                msgDiv.innerHTML = `<div class="message-content">${text}</div>` + htmlButtons + `<div class="message-meta"><span class="time">${getCurrentTime()}</span></div>`;
+                msgDiv.innerHTML = text + htmlButtons;
+                const meta = document.createElement('div');
+                meta.className = 'message-meta';
+                meta.innerHTML = `<span class="time">${getCurrentTime()}</span>`;
+                msgDiv.appendChild(meta);
             } else {
                 msgDiv.innerText = text;
                 const meta = document.createElement('div');
