@@ -27,69 +27,66 @@ def process():
     data = req.get('data', {})
 
     if step == 'GET_PRICE':
-        # Validasi harga barang
         clean_text = text.replace('.', '').replace(',', '').replace('Rp', '').strip()
         if not clean_text.isdigit():
-            reply = "<div class='message-content'>⚠️ <b>Format harga tidak valid!</b><br><br>Silakan ketik dan kirimkan angka harga barang saja secara benar:<br><i>(Contoh: 3.500.000 atau 3500000)</i></div>"
+            reply = "⚠️ <b>Format harga tidak valid!</b><br><br>Silakan ketik dan kirimkan angka harga barang saja secara benar:<br><i>(Contoh: 3.500.000 atau 3500000)</i>"
             return jsonify({'next_step': 'GET_PRICE', 'data': data, 'reply': reply, 'buttons': ''})
         
         harga = int(clean_text)
         data['harga'] = harga
         
-        reply = f"<div class='message-content'>✅ <b>Harga Barang tercatat:</b> Rp {harga:,}<br><br>💰 Masukkan jumlah <b>Uang Muka (DP)</b> yang ingin dibayarkan:<br><i>(Ketik 0 jika tanpa DP)</i></div>"
+        reply = f"✅ <b>Harga Barang tercatat:</b> Rp {harga:,}<br><br>💰 Masukkan jumlah <b>Uang Muka (DP)</b> yang ingin dibayarkan:<br><i>(Ketik 0 jika tanpa DP)</i>"
         return jsonify({'next_step': 'GET_DP', 'data': data, 'reply': reply, 'buttons': ''})
 
     elif step == 'GET_DP':
         clean_text = text.replace('.', '').replace(',', '').replace('Rp', '').strip()
         if not clean_text.isdigit():
-            reply = "<div class='message-content'>⚠️ <b>Format Uang Muka (DP) tidak valid!</b><br><br>Silakan masukkan angka nominal DP atau ketik <b>0</b> jika tanpa DP:</div>"
+            reply = "⚠️ <b>Format Uang Muka (DP) tidak valid!</b><br><br>Silakan masukkan angka nominal DP atau ketik <b>0</b> jika tanpa DP:"
             return jsonify({'next_step': 'GET_DP', 'data': data, 'reply': reply, 'buttons': ''})
         
         dp = int(clean_text)
         if dp >= data['harga']:
-            reply = f"<div class='message-content'>⚠️ Uang Muka (DP) tidak boleh melebihi atau sama dengan Harga Barang!<br><br>Silakan masukkan nominal DP yang lebih kecil dari Rp {data['harga']:,}:</div>"
+            reply = f"⚠️ Uang Muka (DP) tidak boleh melebihi atau sama dengan Harga Barang!<br><br>Silakan masukkan nominal DP yang lebih kecil dari Rp {data['harga']:,}:"
             return jsonify({'next_step': 'GET_DP', 'data': data, 'reply': reply, 'buttons': ''})
 
         data['dp'] = dp
-        reply = f"<div class='message-content'>✅ <b>DP tercatat:</b> Rp {dp:,}<br><br>⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan (pilihan: 3, 6, 9, 12 bulan):<br><i>(Contoh: 12)</i></div>"
+        reply = f"✅ <b>DP tercatat:</b> Rp {dp:,}<br><br>⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan (pilihan: 3, 6, 9, 12 bulan):<br><i>(Contoh: 12)</i>"
         return jsonify({'next_step': 'GET_TENOR', 'data': data, 'reply': reply, 'buttons': ''})
 
     elif step == 'GET_TENOR':
         clean_text = text.replace('bulan', '').replace('bln', '').strip()
         if not clean_text.isdigit() or int(clean_text) not in [3, 6, 9, 12]:
-            reply = "<div class='message-content'>⚠️ <b>Pilihan Tenor tidak valid!</b><br><br>Silakan pilih tenor yang tersedia: <b>3, 6, 9,</b> atau <b>12</b> bulan.</div>"
+            reply = "⚠️ <b>Pilihan Tenor tidak valid!</b><br><br>Silakan pilih tenor yang tersedia: <b>3, 6, 9,</b> atau <b>12</b> bulan."
             return jsonify({'next_step': 'GET_TENOR', 'data': data, 'reply': reply, 'buttons': ''})
         
         tenor = int(clean_text)
         data['tenor'] = tenor
 
-        # Hitung simulasi cicilan
         harga = data['harga']
         dp = data['dp']
         sisa_pokok = harga - dp
         
-        # Simulasi perhitungan bunga & admin HCI sederhana
-        bunga_per_bulan = 0.025 # 2.5% per bulan
+        bunga_per_bulan = 0.025
         admin_fee = 199000
         
         total_hutang = sisa_pokok + (sisa_pokok * bunga_per_bulan * tenor) + admin_fee
         cicilan_per_bulan = int(total_hutang / tenor)
 
-        reply = f"""<div class='message-content'>
-━━━━━━━━━━━━━━━━━━━<br>
-📊 <b>HASIL SIMULASI CICILAN</b> 📊<br>
-🏢 <b>Home Credit Indonesia</b><br>
-━━━━━━━━━━━━━━━━━━━<br><br>
-🏷️ <b>Harga Barang</b> : Rp {harga:,}<br>
-💵 <b>Uang Muka (DP)</b> : Rp {dp:,}<br>
-📅 <b>Tenor Cicilan</b> : {tenor} Bulan<br>
-━━━━━━━━━━━━━━━━━━━<br><br>
-💳 <b>ESTIMASI CICILAN :</b><br>
-👉 <b>Rp {cicilan_per_bulan:,} / bln</b><br>
-━━━━━━━━━━━━━━━━━━━<br><br>
-ℹ️ <b>Catatan Penting:</b><br>
-• Besaran cicilan, bunga, & admin dapat bervariasi tergantung NIK dan profil akun masing-masing.
-</div>"""
+        reply = (
+            "━━━━━━━━━━━━━━━━━━━<br>"
+            "📊 <b>HASIL SIMULASI CICILAN</b> 📊<br>"
+            "🏢 <b>Home Credit Indonesia</b><br>"
+            "━━━━━━━━━━━━━━━━━━━<br><br>"
+            f"🏷️ <b>Harga Barang</b> : Rp {harga:,}<br>"
+            f"💵 <b>Uang Muka (DP)</b> : Rp {dp:,}<br>"
+            f"📅 <b>Tenor Cicilan</b> : {tenor} Bulan<br>"
+            "━━━━━━━━━━━━━━━━━━━<br><br>"
+            "💳 <b>ESTIMASI CICILAN :</b><br>"
+            f"👉 <b>Rp {cicilan_per_bulan:,} / bln</b><br>"
+            "━━━━━━━━━━━━━━━━━━━<br><br>"
+            "ℹ️ <b>Catatan Penting:</b><br>"
+            "• Besaran cicilan, bunga, & admin dapat bervariasi tergantung NIK dan profil akun masing-masing."
+        )
 
         buttons = """
         <div class="btn-group">
@@ -100,7 +97,7 @@ def process():
 
         return jsonify({'next_step': 'DONE', 'data': data, 'reply': reply, 'buttons': buttons, 'loading': True})
 
-    return jsonify({'next_step': 'GET_PRICE', 'data': {}, 'reply': '<div class="message-content">Silakan mulai simulasi baru.</div>', 'buttons': ''})
+    return jsonify({'next_step': 'GET_PRICE', 'data': {}, 'reply': 'Silakan mulai simulasi baru.', 'buttons': ''})
 
 if __name__ == '__main__':
     app.run(debug=True)
