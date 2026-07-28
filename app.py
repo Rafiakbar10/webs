@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
+import zoneinfo
 import os
 
 app = Flask(__name__)
@@ -26,7 +27,9 @@ def ambil_biaya_admin(sisa_pokok: float, tenor: int) -> float:
     return 0.0
 
 def get_salam_waktu() -> str:
-    jam = datetime.now().hour
+    zona_waktu_wib = zoneinfo.ZoneInfo("Asia/Jakarta")
+    jam = datetime.now(zona_waktu_wib).hour
+    
     if 4 <= jam < 11:
         return "SELAMAT PAGI 🌅"
     elif 11 <= jam < 15:
@@ -79,7 +82,7 @@ def process():
             return jsonify({
                 "next_step": "GET_TENOR", 
                 "data": data,
-                "reply": f"✅ DP tercatat: <b>Rp {dp:,.0f}</b>\n\n⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan ({info_tenor})\n\n<i>(Contoh: 12 atau 14)</i>"
+                "reply": f"✅ DP tercatat: <b>Rp {dp:,.0f}</b>\n\n⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan ({info_tenor})\n\n<i>(Contoh: 12 )</i>"
             })
         except ValueError:
             return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ Format DP tidak valid. Masukkan angka saja (contoh: 500000 atau 0):"})
@@ -91,7 +94,7 @@ def process():
             dp = data["dp"]
             sisa_pokok = harga - dp
 
-            pilihan_valid = [3, 6, 9, 12, 14] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 14, 15, 18, 21, 24]
+            pilihan_valid = [3, 6, 9, 12] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 14, 15, 18, 21, 24]
 
             if tenor_input not in pilihan_valid:
                 return jsonify({"next_step": "GET_TENOR", "data": data, "reply": f"⚠️ Tenor tidak ada di pilihan!\nSilakan masukkan tenor yang tersedia: ({', '.join(map(str, pilihan_valid))}) bulan."})
@@ -116,7 +119,13 @@ def process():
             pesan_wa = f"Halo Admin, saya ingin mengajukan cicilan Home Credit dengan rincian:\n- Harga Barang: Rp {harga:,.0f}\n- DP: Rp {dp:,.0f}\n- Tenor: {tampilan_tenor}\n- Cicilan: Rp {cicilan_per_bulan:,.0f} / bln"
             url_wa = f"https://wa.me/6285935491278?text={pesan_wa.replace(' ', '%20').replace(chr(10), '%0A')}"
 
-            html_buttons = f'<div class="btn-group"><a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a><button type="button" class="wa-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button></div>'
+            # Fungsi reset baru tanpa me-refresh halaman (riwayat chat aman)
+            html_buttons = f'''
+            <div class="btn-group">
+                <a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a>
+                <button type="button" class="wa-btn" onclick="mulaiSimulasiBaru()">🔄 Hitung Simulasi Baru</button>
+            </div>
+            '''
 
             pesan_hasil = (
                 "━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -140,8 +149,8 @@ def process():
                 "data": data, 
                 "loading": True,
                 "reply": pesan_hasil, 
-                "buttons": html_buttons, 
-                "reset": True
+                "buttons": html_buttons,
+                "salam_waktu": get_salam_waktu()
             })
         except ValueError:
             return jsonify({"next_step": "GET_TENOR", "data": data, "reply": "⚠️ Masukkan angka bulat untuk jumlah bulan yang valid:"})
