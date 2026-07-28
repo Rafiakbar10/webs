@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# Logika Perhitungan Cicilan Home Credit
 def ambil_biaya_perlindungan(sisa_pokok: float) -> float:
     if 500_000 <= sisa_pokok <= 10_000_000:
         return 599_000
@@ -37,108 +36,134 @@ def get_salam_waktu() -> str:
     else:
         return "SELAMAT MALAM 🌙"
 
-# Tampilan Halaman Web (Frontend + Chat Telegram UI)
+# Tampilan HTML & CSS dengan Tema WhatsApp Asli (Dark Mode)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Cicilan HCI - Telegram Web</title>
+    <title>Simulasi Cicilan HCI - WhatsApp Style</title>
     <style>
         body {
-            background-color: #0e1621;
-            color: #f5f5f5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b141a;
+            color: #e9edef;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
-        .chat-header {
-            background-color: #17212b;
+        /* Header WhatsApp */
+        .wa-header {
+            background-color: #202c33;
             padding: 10px 15px;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #0f1621;
+            border-bottom: 1px solid #222d34;
             position: fixed;
             top: 0;
             width: 100%;
             box-sizing: border-box;
             z-index: 100;
         }
-        .avatar {
+        .wa-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ff8800, #ff5500);
+            background-color: #00a884;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             color: white;
             margin-right: 12px;
         }
-        .chat-info h3 {
+        .wa-info h3 {
             margin: 0;
             font-size: 16px;
-            color: #ffffff;
+            color: #e9edef;
+            font-weight: 500;
         }
-        .chat-info p {
+        .wa-info p {
             margin: 2px 0 0 0;
             font-size: 12px;
-            color: #829ab1;
+            color: #8696a0;
         }
-        .chat-container {
+        /* Area Chat dengan Wallpaper gelap khas WhatsApp */
+        .wa-chat-container {
             flex: 1;
             margin-top: 60px;
-            margin-bottom: 70px;
+            margin-bottom: 65px;
             padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-width: 600px;
+            gap: 8px;
+            background-color: #0b141a;
+            background-image: radial-gradient(#111b21 1px, transparent 1px);
+            background-size: 20px 20px;
+            max-width: 700px;
             width: 100%;
             align-self: center;
+            box-sizing: border-box;
         }
         .message {
             max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            font-size: 14.5px;
             line-height: 1.4;
             word-wrap: break-word;
+            position: relative;
             white-space: pre-wrap;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
         }
+        /* Pesan Masuk (Bot / Lawan Chat) - Warna Abu-abu Gelap */
         .message.bot {
-            background-color: #182533;
-            color: #ffffff;
+            background-color: #202c33;
+            color: #e9edef;
             align-self: flex-start;
-            border-bottom-left-radius: 2px;
+            border-top-left-radius: 0;
         }
+        /* Pesan Keluar (User / Kita) - Warna Hijau khas WhatsApp */
         .message.user {
-            background-color: #2b5278;
-            color: #ffffff;
+            background-color: #005c4b;
+            color: #e9edef;
             align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            border-top-right-radius: 0;
+        }
+        .message-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 2px;
+            float: right;
+            margin-left: 10px;
         }
         .time {
-            font-size: 10px;
-            color: #829ab1;
-            text-align: right;
-            margin-top: 4px;
+            font-size: 11px;
+            color: #8696a0;
         }
+        /* Centang Dua Biru ala WhatsApp */
+        .check-icon {
+            font-size: 13px;
+            color: #53bdeb;
+            font-weight: bold;
+        }
+        /* Tombol Aksi */
         .btn-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
             margin-top: 8px;
         }
-        .tg-btn {
-            background-color: #2b5278;
+        .wa-btn {
+            background-color: #005c4b;
             color: white;
             border: none;
             padding: 10px;
@@ -149,37 +174,51 @@ HTML_TEMPLATE = """
             text-align: center;
             text-decoration: none;
         }
-        .tg-btn:hover { background-color: #386795; }
-        .tg-btn.whatsapp { background-color: #25d366; }
-        .tg-btn.whatsapp:hover { background-color: #20ba5a; }
-        .chat-input-area {
-            background-color: #17212b;
+        .wa-btn:hover { background-color: #006c58; }
+        .wa-btn.whatsapp { background-color: #00a884; }
+        .wa-btn.whatsapp:hover { background-color: #009072; }
+        
+        /* Footer Input ala WhatsApp */
+        .wa-input-area {
+            background-color: #202c33;
             padding: 10px 15px;
             display: flex;
+            align-items: center;
             gap: 10px;
             position: fixed;
             bottom: 0;
             width: 100%;
             box-sizing: border-box;
-            max-width: 600px;
+            max-width: 700px;
             left: 50%;
             transform: translateX(-50%);
         }
-        .chat-input-area input {
-            flex: 1;
-            background-color: #242f3d;
+        .wa-input-area .icon-btn {
+            background: none;
             border: none;
-            padding: 12px 15px;
-            border-radius: 20px;
+            color: #8696a0;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .wa-input-area input {
+            flex: 1;
+            background-color: #2a3942;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
             color: white;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
         }
-        .chat-input-area button {
-            background-color: #5288c1;
+        .wa-input-area input::placeholder {
+            color: #8696a0;
+        }
+        .wa-input-area .send-btn {
+            background-color: #00a884;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
@@ -188,36 +227,52 @@ HTML_TEMPLATE = """
             justify-content: center;
             font-size: 16px;
         }
+        .wa-input-area .send-btn:hover {
+            background-color: #008f72;
+        }
     </style>
 </head>
 <body>
-    <div class="chat-header">
-        <div class="avatar">HC</div>
-        <div class="chat-info">
+
+    <!-- Header WhatsApp -->
+    <div class="wa-header">
+        <div class="wa-avatar">H</div>
+        <div class="wa-info">
             <h3>Simulasi Cicilan HCI</h3>
-            <p>bot</p>
+            <p>online</p>
         </div>
     </div>
 
-    <div class="chat-container" id="chatContainer">
+    <!-- Ruang Chat -->
+    <div class="wa-chat-container" id="chatContainer">
         <div class="message bot">
             ✨ <b>{{ salam }}</b> ✨<br>
             🏢 <b>HOME CREDIT INDONESIA</b><br><br>
             📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
             <i>(Contoh: 3.500.000 atau 3500000)</i>
-            <div class="time" id="initialTime"></div>
+            <div class="message-meta">
+                <span class="time" id="initialTime"></span>
+            </div>
         </div>
     </div>
 
-    <div class="chat-input-area" id="inputArea">
-        <input type="text" id="userInput" placeholder="Ketik pesan..." autocomplete="off">
-        <button id="sendBtn" onclick="sendMessage()">➤</button>
+    <!-- Area Ketik Pesan WhatsApp -->
+    <div class="wa-input-area">
+        <button class="icon-btn">😊</button>
+        <button class="icon-btn">📎</button>
+        <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
 
     <script>
         let step = 'GET_PRICE';
         let dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
-        document.getElementById('initialTime').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        document.getElementById('initialTime').innerText = getCurrentTime();
 
         const inputField = document.getElementById('userInput');
         inputField.addEventListener("keypress", function(event) {
@@ -228,13 +283,20 @@ HTML_TEMPLATE = """
             const container = document.getElementById('chatContainer');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            if(sender === 'bot') { msgDiv.innerHTML = text + htmlButtons; }
-            else { msgDiv.innerText = text; }
-
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'time';
-            timeDiv.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            msgDiv.appendChild(timeDiv);
+            
+            if(sender === 'bot') {
+                msgDiv.innerHTML = text + htmlButtons;
+                const meta = document.createElement('div');
+                meta.className = 'message-meta';
+                meta.innerHTML = `<span class="time">${getCurrentTime()}</span>`;
+                msgDiv.appendChild(meta);
+            } else {
+                msgDiv.innerText = text;
+                const meta = document.createElement('div');
+                meta.className = 'message-meta';
+                meta.innerHTML = `<span class="time">${getCurrentTime()}</span><span class="check-icon">✓✓</span>`;
+                msgDiv.appendChild(meta);
+            }
 
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
@@ -243,6 +305,7 @@ HTML_TEMPLATE = """
         async function sendMessage() {
             const text = inputField.value.trim();
             if (!text) return;
+
             appendMessage(text, 'user');
             inputField.value = '';
 
@@ -253,6 +316,7 @@ HTML_TEMPLATE = """
                     body: JSON.stringify({ step: step, text: text, data: dataSimulasi })
                 });
                 const result = await response.json();
+
                 step = result.next_step;
                 dataSimulasi = result.data;
 
@@ -270,6 +334,7 @@ HTML_TEMPLATE = """
                 } else {
                     appendMessage(result.reply, 'bot', result.buttons);
                 }
+
             } catch (error) {
                 appendMessage("⚠️ Terjadi kesalahan koneksi.", 'bot');
             }
@@ -295,6 +360,7 @@ def process():
             harga = float(text)
             if harga < 500_000:
                 return jsonify({"next_step": "GET_PRICE", "data": data, "reply": "⚠️ Minimal harga barang adalah Rp 500.000. Silakan masukkan harga yang valid:"})
+            
             data["harga"] = harga
             return jsonify({
                 "next_step": "GET_DP", "data": data, 
@@ -309,11 +375,14 @@ def process():
             harga = data["harga"]
             if dp < 0 or dp >= harga:
                 return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ DP tidak valid (tidak boleh melebihi atau sama dengan Harga Barang). Masukkan nominal DP lain:"})
+            
             sisa_pokok = harga - dp
             if sisa_pokok < 500_000:
                 return jsonify({"next_step": "GET_DP", "data": data, "reply": "⚠️ Sisa pokok setelah DP minimal Rp 500.000. Masukkan nominal DP yang lain:"})
+            
             data["dp"] = dp
             info_tenor = "pilihan: 3, 6, 9, 12, 14 bulan" if 500_000 <= sisa_pokok <= 5_000_000 else "pilihan: 3, 6, 9, 12, 14, 15, 18, 21, 24 bulan"
+            
             return jsonify({
                 "next_step": "GET_TENOR", "data": data,
                 "reply": f"✅ DP tercatat: <b>Rp {dp:,.0f}</b>\n\n⏳ Masukkan <b>Tenor Cicilan</b> dalam satuan bulan ({info_tenor})\n\n<i>(Contoh: 12 atau 14)</i>"
@@ -327,6 +396,7 @@ def process():
             harga = data["harga"]
             dp = data["dp"]
             sisa_pokok = harga - dp
+
             pilihan_valid = [3, 6, 9, 12, 14] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 14, 15, 18, 21, 24]
 
             if tenor_input not in pilihan_valid:
@@ -340,6 +410,7 @@ def process():
                 biaya_perlindungan = ambil_biaya_perlindungan(sisa_pokok)
                 biaya_admin = ambil_biaya_admin(sisa_pokok, tenor_input)
                 total_biaya_bulanan = 10_000 * tenor_input
+                
                 if 500_000 <= sisa_pokok <= 5_000_000:
                     total_bunga = (sisa_pokok * 0.0225) * tenor_input
                     total_keseluruhan = sisa_pokok + biaya_perlindungan + biaya_admin + total_biaya_bulanan + total_bunga
@@ -353,8 +424,8 @@ def process():
 
             html_buttons = f"""
             <div class="btn-group">
-                <a href="{url_wa}" target="_blank" class="tg-btn whatsapp">💬 Hubungi WhatsApp Admin</a>
-                <button class="tg-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button>
+                <a href="{url_wa}" target="_blank" class="wa-btn whatsapp">💬 Hubungi WhatsApp Admin</a>
+                <button class="wa-btn" onclick="location.reload()">🔄 Hitung Simulasi Baru</button>
             </div>
             """
 
