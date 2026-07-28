@@ -36,14 +36,13 @@ def get_salam_waktu() -> str:
     else:
         return "SELAMAT MALAM 🌙"
 
-# Tampilan HTML & CSS dengan Tema WhatsApp Asli (Dark Mode)
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Cicilan HCI - WhatsApp Style</title>
+    <title>Simulasi Cicilan HCI - WhatsApp</title>
     <style>
         body {
             background-color: #0b141a;
@@ -70,9 +69,9 @@ HTML_TEMPLATE = """
             z-index: 100;
         }
         .wa-avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #00a884;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #e65c00, #f9d423);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -81,6 +80,7 @@ HTML_TEMPLATE = """
             font-size: 16px;
             color: white;
             margin-right: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         .wa-info h3 {
             margin: 0;
@@ -91,45 +91,45 @@ HTML_TEMPLATE = """
         .wa-info p {
             margin: 2px 0 0 0;
             font-size: 12px;
-            color: #8696a0;
+            color: #00a884;
+            font-weight: 500;
         }
-        /* Area Chat dengan Wallpaper gelap khas WhatsApp */
+        /* Ruang Chat Wallpaper */
         .wa-chat-container {
             flex: 1;
-            margin-top: 60px;
-            margin-bottom: 65px;
-            padding: 15px;
+            margin-top: 62px;
+            margin-bottom: 70px;
+            padding: 15px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             background-color: #0b141a;
-            background-image: radial-gradient(#111b21 1px, transparent 1px);
-            background-size: 20px 20px;
-            max-width: 700px;
+            background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
+            max-width: 750px;
             width: 100%;
             align-self: center;
             box-sizing: border-box;
         }
         .message {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 7.5px;
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: 14.5px;
-            line-height: 1.4;
+            line-height: 1.5;
             word-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
-            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
         }
-        /* Pesan Masuk (Bot / Lawan Chat) - Warna Abu-abu Gelap */
         .message.bot {
             background-color: #202c33;
             color: #e9edef;
             align-self: flex-start;
             border-top-left-radius: 0;
+            border-left: 4px solid #00a884;
         }
-        /* Pesan Keluar (User / Kita) - Warna Hijau khas WhatsApp */
         .message.user {
             background-color: #005c4b;
             color: #e9edef;
@@ -141,15 +141,14 @@ HTML_TEMPLATE = """
             align-items: center;
             justify-content: flex-end;
             gap: 4px;
-            margin-top: 2px;
+            margin-top: 4px;
             float: right;
-            margin-left: 10px;
+            margin-left: 12px;
         }
         .time {
             font-size: 11px;
             color: #8696a0;
         }
-        /* Centang Dua Biru ala WhatsApp */
         .check-icon {
             font-size: 13px;
             color: #53bdeb;
@@ -159,66 +158,93 @@ HTML_TEMPLATE = """
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 12px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
+            transition: background 0.2s;
         }
         .wa-btn:hover { background-color: #006c58; }
-        .wa-btn.whatsapp { background-color: #00a884; }
+        .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
         .wa-btn.whatsapp:hover { background-color: #009072; }
         
-        /* Footer Input ala WhatsApp */
+        /* Popup Menu Emoji */
+        .emoji-picker {
+            position: absolute;
+            bottom: 75px;
+            left: 15px;
+            background-color: #202c33;
+            border: 1px solid #2a3942;
+            border-radius: 12px;
+            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 200;
+        }
+        .emoji-item {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 6px;
+        }
+        .emoji-item:hover { background-color: #2a3942; }
+
+        /* Footer Input WhatsApp */
         .wa-input-area {
             background-color: #202c33;
             padding: 10px 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             position: fixed;
             bottom: 0;
             width: 100%;
             box-sizing: border-box;
-            max-width: 700px;
+            max-width: 750px;
             left: 50%;
             transform: translateX(-50%);
+            border-top: 1px solid #222d34;
         }
         .wa-input-area .icon-btn {
             background: none;
             border: none;
             color: #8696a0;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
             padding: 0;
+            transition: color 0.2s;
         }
+        .wa-input-area .icon-btn:hover { color: #e9edef; }
         .wa-input-area input {
             flex: 1;
             background-color: #2a3942;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 16px;
             border-radius: 8px;
             color: white;
             font-size: 15px;
             outline: none;
         }
-        .wa-input-area input::placeholder {
-            color: #8696a0;
-        }
+        .wa-input-area input::placeholder { color: #8696a0; }
         .wa-input-area .send-btn {
             background-color: #00a884;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
@@ -226,27 +252,40 @@ HTML_TEMPLATE = """
             align-items: center;
             justify-content: center;
             font-size: 16px;
+            transition: background 0.2s;
         }
-        .wa-input-area .send-btn:hover {
-            background-color: #008f72;
-        }
+        .wa-input-area .send-btn:hover { background-color: #008f72; }
     </style>
 </head>
 <body>
 
     <!-- Header WhatsApp -->
     <div class="wa-header">
-        <div class="wa-avatar">H</div>
+        <div class="wa-avatar">HCI</div>
         <div class="wa-info">
             <h3>Simulasi Cicilan HCI</h3>
             <p>online</p>
         </div>
     </div>
 
+    <!-- Popup Emoji Picker -->
+    <div class="emoji-picker" id="emojiPicker">
+        <button class="emoji-item" onclick="addEmoji('😊')">😊</button>
+        <button class="emoji-item" onclick="addEmoji('👍')">👍</button>
+        <button class="emoji-item" onclick="addEmoji('🔥')">🔥</button>
+        <button class="emoji-item" onclick="addEmoji('⭐')">⭐</button>
+        <button class="emoji-item" onclick="addEmoji('🤝')">🤝</button>
+        <button class="emoji-item" onclick="addEmoji('📱')">📱</button>
+        <button class="emoji-item" onclick="addEmoji('💻')">💻</button>
+        <button class="emoji-item" onclick="addEmoji('💸')">💸</button>
+        <button class="emoji-item" onclick="addEmoji('✨')">✨</button>
+        <button class="emoji-item" onclick="addEmoji('🙏')">🙏</button>
+    </div>
+
     <!-- Ruang Chat -->
     <div class="wa-chat-container" id="chatContainer">
         <div class="message bot">
-            ✨ <b>{{ salam }}</b> ✨<br>
+            ✨ <b>{{ salam }}</b> ✨<br><br>
             🏢 <b>HOME CREDIT INDONESIA</b><br><br>
             📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
             <i>(Contoh: 3.500.000 atau 3500000)</i>
@@ -258,8 +297,8 @@ HTML_TEMPLATE = """
 
     <!-- Area Ketik Pesan WhatsApp -->
     <div class="wa-input-area">
-        <button class="icon-btn">😊</button>
-        <button class="icon-btn">📎</button>
+        <button class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
+        <button class="icon-btn" onclick="showInfoAttach()" title="Menu Bantuan">📎</button>
         <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
         <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
@@ -277,6 +316,29 @@ HTML_TEMPLATE = """
         const inputField = document.getElementById('userInput');
         inputField.addEventListener("keypress", function(event) {
             if (event.key === "Enter") { sendMessage(); }
+        });
+
+        function toggleEmojiPicker(e) {
+            e.stopPropagation();
+            const picker = document.getElementById('emojiPicker');
+            picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
+        }
+
+        function addEmoji(emoji) {
+            inputField.value += emoji;
+            document.getElementById('emojiPicker').style.display = 'none';
+            inputField.focus();
+        }
+
+        function showInfoAttach() {
+            alert("ℹ️ Menu Lampiran (📎):\nKetik nominal Harga Barang atau DP secara langsung pada kolom chat untuk melanjutkan simulasi cicilan.");
+        }
+
+        document.addEventListener('click', function(e) {
+            const picker = document.getElementById('emojiPicker');
+            if (!e.target.closest('.emoji-picker') && !e.target.closest('.icon-btn')) {
+                picker.style.display = 'none';
+            }
         });
 
         function appendMessage(text, sender, htmlButtons = '') {
@@ -308,6 +370,7 @@ HTML_TEMPLATE = """
 
             appendMessage(text, 'user');
             inputField.value = '';
+            document.getElementById('emojiPicker').style.display = 'none';
 
             try {
                 const response = await fetch('/process', {
