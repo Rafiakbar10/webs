@@ -181,7 +181,7 @@
             flex-shrink: 0;
         }
 
-        /* MEMBUAT TEKS SELALU RATA KIRI DAN RAPI SEJAJAR */
+        /* MEMASTIKAN SEMUA TEKS DALAM PESAN BOT BENAR-BENAR RATA KIRI DAN RAPI */
         .message {
             max-width: 85%;
             padding: 10px 14px;
@@ -412,11 +412,11 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka Pertama yang Rapi dan Rata Kiri -->
+            <!-- Pesan Pembuka Pertama (Otomatis & Rata Kiri Rapi) -->
             <div class="message bot">
-                ✨ <b>{{ salam }}</b> ✨<br>
-                🏢 <b>HOME CREDIT INDONESIA</b><br>
-                📦 Silakan masukkan Harga Barang yang ingin anda hitung:<br>
+                ✨ <b>{{ salam }}</b> ✨<br><br>
+                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                📦 <b></b>Silakan masukkan Harga Barang </b> yang ingin anda hitung:<br><br>
                 <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
@@ -517,19 +517,41 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru
+        // Fungsi Tombol Hitung Simulasi Baru (Otomatis mengambil salam waktu dari backend app.py)
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
             const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
             
-            setTimeout(() => {
-                removeTypingBubble(typingId);
-                subStatus.innerText = "online";
-                const pesanBaru = `✨ <b>SELAMAT MALAM</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
-                appendMessage(pesanBaru, 'bot');
-            }, 1000);
+            fetch('/')
+                .then(res => res.text())
+                .then(html => {
+                    // Ekstraksi teks salam otomatis dari halaman utama
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    // Jika tidak terbaca otomatis, backend Flask akan mengirimkan salam dinamis
+                    setTimeout(() => {
+                        removeTypingBubble(typingId);
+                        subStatus.innerText = "online";
+                        
+                        // Menentukan salam otomatis berdasarkan jam client lokal secara real-time
+                        const jam = new Date().getHours();
+                        let salamWaktu = "SELAMAT MALAM";
+                        if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI";
+                        else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG";
+                        else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE";
+
+                        const pesanBaru = `✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                        appendMessage(pesanBaru, 'bot');
+                    }, 1000);
+                })
+                .catch(() => {
+                    removeTypingBubble(typingId);
+                    subStatus.innerText = "online";
+                    const pesanBaru = `✨ <b>{{ salam }}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                    appendMessage(pesanBaru, 'bot');
+                });
         };
 
         function appendMessage(text, sender, htmlButtons = '') {
