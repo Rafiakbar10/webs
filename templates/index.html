@@ -93,7 +93,6 @@
             cursor: pointer;
         }
 
-        /* Menu Dropdown Titik Tiga */
         .dropdown-menu {
             position: absolute;
             top: 40px;
@@ -117,7 +116,6 @@
             background-color: #182229;
         }
 
-        /* Popup Lampiran (📎) ala WhatsApp */
         .attachment-popup {
             position: absolute;
             bottom: 70px;
@@ -225,6 +223,13 @@
             font-weight: bold;
         }
 
+        /* Animasi Mengetik (...) */
+        .typing-indicator {
+            color: #00a884;
+            font-style: italic;
+            font-size: 13.5px;
+        }
+
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -245,7 +250,6 @@
         }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
 
-        /* Popup Emoji Picker */
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -339,11 +343,11 @@
         <!-- Header WhatsApp -->
         <div class="wa-header">
             <div class="wa-header-left">
-                <span class="back-arrow" onclick="alert('Yah lagi ga bisa keluar nih 😂😂😂🙏')">←</span>
+                <span class="back-arrow" onclick="alert('Tidak bisa')">←</span>
                 <div class="wa-avatar" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">HCI</div>
                 <div class="wa-contact-info" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">
-                    <h3 class="wa-contact-name">Simulasi</h3>
-                    <p>online</p>
+                    <h3 class="wa-contact-name" id="headerStatus">Rafii</h3>
+                    <p id="subStatus">online</p>
                 </div>
             </div>
             <div class="wa-header-right">
@@ -351,7 +355,6 @@
                 <span onclick="window.open('https://wa.me/6285935491278', '_blank')">📞</span>
                 <span id="menuToggle">⋮</span>
 
-                <!-- Dropdown Titik Tiga -->
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="https://accounts.homecredit.co.id/credstore-fe/services/login?clientId=KpB3UVsfGaDUvwurVQTrbCsgpa5CUIgW" target="_blank" class="dropdown-item">Buka Website Home Credit</a>
                 </div>
@@ -427,6 +430,7 @@
         const attachmentPopup = document.getElementById('attachmentPopup');
         const menuToggle = document.getElementById('menuToggle');
         const dropdownMenu = document.getElementById('dropdownMenu');
+        const subStatus = document.getElementById('subStatus');
 
         inputField.addEventListener("keypress", function(event) {
             if (event.key === "Enter") { 
@@ -454,15 +458,19 @@
 
         window.selectAttachment = function(infoText) {
             attachmentPopup.style.display = 'none';
-            appendMessage(infoText, 'bot');
+            showTypingAndSend(infoText, 'bot');
         };
 
         window.sendEmojiReaction = function(emoji, responseText) {
             emojiPicker.style.display = 'none';
             appendMessage(emoji, 'user');
+            
+            // Tampilkan status mengetik
+            subStatus.innerText = "mengetik...";
             setTimeout(() => {
+                subStatus.innerText = "online";
                 appendMessage(responseText, 'bot');
-            }, 500);
+            }, 1000);
         };
 
         menuToggle.onclick = function(e) {
@@ -483,13 +491,6 @@
                 dropdownMenu.style.display = 'none';
             }
         });
-
-        window.mulaiSimulasiBaru = function() {
-            step = 'GET_PRICE';
-            dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
-            const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
-            appendMessage(pesanBaru, 'bot');
-        };
 
         function appendMessage(text, sender, htmlButtons = '') {
             const container = document.getElementById('chatContainer');
@@ -514,6 +515,15 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        // Fungsi khusus menampilkan status "mengetik..." di header ala WhatsApp asli
+        function showTypingAndSend(replyText, sender, htmlButtons = '') {
+            subStatus.innerText = "mengetik...";
+            setTimeout(() => {
+                subStatus.innerText = "online";
+                appendMessage(replyText, sender, htmlButtons);
+            }, 1200);
+        }
+
         async function sendMessage() {
             const text = inputField.value.trim();
             if (!text) return;
@@ -523,6 +533,9 @@
             emojiPicker.style.display = 'none';
             attachmentPopup.style.display = 'none';
             dropdownMenu.style.display = 'none';
+
+            // Ubah status header jadi mengetik
+            subStatus.innerText = "mengetik...";
 
             try {
                 const response = await fetch('/process', {
@@ -535,22 +548,26 @@
                 step = result.next_step;
                 dataSimulasi = result.data;
 
-                if(result.loading) {
-                    appendMessage("🔄 <i>Sedang menghitung rincian simulasi terbaik untuk Anda...</i>", 'bot');
-                    setTimeout(() => {
-                        const container = document.getElementById('chatContainer');
-                        container.removeChild(container.lastChild);
+                setTimeout(() => {
+                    subStatus.innerText = "online";
+                    if(result.loading) {
+                        appendMessage("🔄 <i>Sedang menghitung rincian simulasi terbaik untuk Anda...</i>", 'bot');
+                        setTimeout(() => {
+                            const container = document.getElementById('chatContainer');
+                            container.removeChild(container.lastChild);
+                            appendMessage(result.reply, 'bot', result.buttons);
+                            if(result.reset) {
+                                step = 'GET_PRICE';
+                                dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
+                            }
+                        }, 1200);
+                    } else {
                         appendMessage(result.reply, 'bot', result.buttons);
-                        if(result.reset) {
-                            step = 'GET_PRICE';
-                            dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
-                        }
-                    }, 1200);
-                } else {
-                    appendMessage(result.reply, 'bot', result.buttons);
-                }
+                    }
+                }, 1000);
 
             } catch (error) {
+                subStatus.innerText = "online";
                 appendMessage("⚠️ Terjadi kesalahan koneksi.", 'bot');
             }
         }
