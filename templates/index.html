@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WhatsApp</title>
+    <title>WA Simulasi</title>
     <style>
         * {
             box-sizing: border-box;
@@ -181,7 +181,6 @@
             flex-shrink: 0;
         }
 
-        /* Pesan Chat Simpel & Rata Kiri */
         .message {
             max-width: 85%;
             padding: 9px 12px;
@@ -225,7 +224,6 @@
             font-weight: bold;
         }
 
-        /* Styling Gelembung Animasi Mengetik (...) */
         .typing-bubble {
             background-color: #202c33;
             color: #8696a0;
@@ -413,7 +411,7 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka Simpel & Pas -->
+            <!-- Pesan Pembuka Pertama (Disamakan Persis dengan Format Simulasi Baru) -->
             <div class="message bot">
                 ✨ <b>{{ salam }}</b> ✨<br><br>
                 🏢 <b>HOME CREDIT INDONESIA</b><br><br>
@@ -518,18 +516,23 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru yang simpel dan rapi
+        // Fungsi Tombol Hitung Simulasi Baru (Memunculkan animasi mengetik lalu pesan sambutan baru di bawah)
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
             const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
-            setTimeout(() => {
-                removeTypingBubble(typingId);
-                subStatus.innerText = "online";
-                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
-                appendMessage(pesanBaru, 'bot');
-            }, 1000);
+            
+            // Mengambil salam waktu secara dinamis via fetch dari backend app.py
+            fetch('/')
+                .then(() => {
+                    setTimeout(() => {
+                        removeTypingBubble(typingId);
+                        subStatus.innerText = "online";
+                        const pesanBaru = `✨ <b>{{ salam }}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                        appendMessage(pesanBaru, 'bot');
+                    }, 1000);
+                });
         };
 
         function appendMessage(text, sender, htmlButtons = '') {
