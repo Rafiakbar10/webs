@@ -223,11 +223,32 @@
             font-weight: bold;
         }
 
-        /* Animasi Mengetik (...) */
-        .typing-indicator {
-            color: #00a884;
-            font-style: italic;
-            font-size: 13.5px;
+        /* Styling Gelembung Animasi Mengetik (...) */
+        .typing-bubble {
+            background-color: #202c33;
+            color: #8696a0;
+            padding: 10px 16px;
+            border-radius: 7.5px;
+            border-top-left-radius: 0;
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
+        }
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #8696a0;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
         }
 
         .btn-group {
@@ -343,10 +364,10 @@
         <!-- Header WhatsApp -->
         <div class="wa-header">
             <div class="wa-header-left">
-                <span class="back-arrow" onclick="alert('Tidak bisa')">←</span>
+                <span class="back-arrow" onclick="alert('Yah lagi ga bisa keluar dari halaman ini 😂😂😂🙏')">←</span>
                 <div class="wa-avatar" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">HCI</div>
                 <div class="wa-contact-info" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">
-                    <h3 class="wa-contact-name" id="headerStatus">Rafii</h3>
+                    <h3 class="wa-contact-name" id="headerStatus">Simulasi</h3>
                     <p id="subStatus">online</p>
                 </div>
             </div>
@@ -458,19 +479,22 @@
 
         window.selectAttachment = function(infoText) {
             attachmentPopup.style.display = 'none';
-            showTypingAndSend(infoText, 'bot');
+            showTypingBubbleAndSend(infoText, 'bot');
         };
 
         window.sendEmojiReaction = function(emoji, responseText) {
             emojiPicker.style.display = 'none';
             appendMessage(emoji, 'user');
             
-            // Tampilkan status mengetik
+            // Tampilkan gelembung animasi mengetik (...)
+            const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
+            
             setTimeout(() => {
+                removeTypingBubble(typingId);
                 subStatus.innerText = "online";
                 appendMessage(responseText, 'bot');
-            }, 1000);
+            }, 1200);
         };
 
         menuToggle.onclick = function(e) {
@@ -515,10 +539,35 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Fungsi khusus menampilkan status "mengetik..." di header ala WhatsApp asli
-        function showTypingAndSend(replyText, sender, htmlButtons = '') {
+        // Fungsi Memunculkan Gelembung Animasi Mengetik (...)
+        function showTypingBubble() {
+            const container = document.getElementById('chatContainer');
+            const typingDiv = document.createElement('div');
+            const uniqueId = 'typing-' + Date.now();
+            typingDiv.id = uniqueId;
+            typingDiv.className = 'typing-bubble';
+            typingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            container.appendChild(typingDiv);
+            container.scrollTop = container.scrollHeight;
+            return uniqueId;
+        }
+
+        function removeTypingBubble(uniqueId) {
+            const bubble = document.getElementById(uniqueId);
+            if (bubble) {
+                bubble.remove();
+            }
+        }
+
+        function showTypingBubbleAndSend(replyText, sender, htmlButtons = '') {
+            const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
             setTimeout(() => {
+                removeTypingBubble(typingId);
                 subStatus.innerText = "online";
                 appendMessage(replyText, sender, htmlButtons);
             }, 1200);
@@ -534,7 +583,8 @@
             attachmentPopup.style.display = 'none';
             dropdownMenu.style.display = 'none';
 
-            // Ubah status header jadi mengetik
+            // Tampilkan gelembung animasi mengetik (...) dan ubah status header
+            const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
 
             try {
@@ -549,12 +599,14 @@
                 dataSimulasi = result.data;
 
                 setTimeout(() => {
+                    removeTypingBubble(typingId);
                     subStatus.innerText = "online";
                     if(result.loading) {
-                        appendMessage("🔄 <i>Sedang menghitung rincian simulasi terbaik untuk Anda...</i>", 'bot');
+                        const loadingTypingId = showTypingBubble();
+                        subStatus.innerText = "mengetik...";
                         setTimeout(() => {
-                            const container = document.getElementById('chatContainer');
-                            container.removeChild(container.lastChild);
+                            removeTypingBubble(loadingTypingId);
+                            subStatus.innerText = "online";
                             appendMessage(result.reply, 'bot', result.buttons);
                             if(result.reset) {
                                 step = 'GET_PRICE';
@@ -567,6 +619,7 @@
                 }, 1000);
 
             } catch (error) {
+                removeTypingBubble(typingId);
                 subStatus.innerText = "online";
                 appendMessage("⚠️ Terjadi kesalahan koneksi.", 'bot');
             }
