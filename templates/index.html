@@ -181,13 +181,13 @@
             flex-shrink: 0;
         }
 
-        /* Pesan Chat Rata Kiri Sejajar */
+        /* Pesan Chat Simpel & Rata Kiri */
         .message {
-            max-width: 88%;
-            padding: 12px 14px;
+            max-width: 85%;
+            padding: 9px 12px;
             border-radius: 7.5px;
             font-size: 14.5px;
-            line-height: 1.5;
+            line-height: 1.45;
             word-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
@@ -211,9 +211,9 @@
             align-items: center;
             justify-content: flex-end;
             gap: 3px;
-            margin-top: 4px;
+            margin-top: 3px;
             float: right;
-            margin-left: 10px;
+            margin-left: 8px;
         }
         .time {
             font-size: 10.5px;
@@ -257,16 +257,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .wa-btn {
             background-color: #005c4b;
             color: white;
             border: none;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 500;
             text-align: center;
             text-decoration: none;
@@ -413,13 +413,11 @@
             </div>
             <div class="chat-date-badge">Hari ini</div>
 
-            <!-- Pesan Pembuka yang Sejajar ke Samping & Rapi -->
+            <!-- Pesan Pembuka Simpel & Pas -->
             <div class="message bot">
-                ━━━━━━━━━━━━━━━━━━━<br>
-                ✨ <b>{{ salam }}</b><br>
-                🏢 <b>Home Credit Indonesia</b><br>
-                ━━━━━━━━━━━━━━━━━━━<br><br>
-                📦 <b>Silakan ketik dan kirimkan Harga Barang yang ingin Anda hitung:</b><br><br>
+                ✨ <b>{{ salam }}</b> ✨<br><br>
+                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
+                📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
                 <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
@@ -520,7 +518,7 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru yang rapi sejajar ke samping
+        // Fungsi Tombol Hitung Simulasi Baru yang simpel dan rapi
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
@@ -529,7 +527,7 @@
             setTimeout(() => {
                 removeTypingBubble(typingId);
                 subStatus.innerText = "online";
-                const pesanBaru = `━━━━━━━━━━━━━━━━━━━<br>📦 <b>Silakan ketik dan kirimkan Harga Barang baru yang ingin Anda hitung:</b><br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
                 appendMessage(pesanBaru, 'bot');
             }, 1000);
         };
