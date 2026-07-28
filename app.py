@@ -44,17 +44,20 @@ HTML_TEMPLATE = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WhatsApp - Simulasi Cicilan HCI</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         html, body {
             background-color: #0b141a;
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Kontainer Utama Full Layar ala WhatsApp Android */
+        /* Kontainer Utama Flexbox agar input selalu di bawah */
         .wa-mobile-container {
             width: 100%;
             height: 100%;
@@ -63,11 +66,9 @@ HTML_TEMPLATE = """
             background-color: #0b141a;
             display: flex;
             flex-direction: column;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            justify-content: space-between;
+            height: 100vh;
+            height: 100dvh;
         }
 
         /* Header WhatsApp */
@@ -78,7 +79,6 @@ HTML_TEMPLATE = """
             align-items: center;
             justify-content: space-between;
             height: 56px;
-            box-sizing: border-box;
             flex-shrink: 0;
             z-index: 10;
             color: #aebac1;
@@ -117,11 +117,8 @@ HTML_TEMPLATE = """
             gap: 18px;
             font-size: 18px;
         }
-        .wa-header-right span {
-            cursor: pointer;
-        }
 
-        /* Ruang Chat Wallpaper */
+        /* Ruang Chat Wallpaper yang bisa di-scroll */
         .wa-chat-container {
             flex: 1;
             padding: 12px 15px;
@@ -132,10 +129,9 @@ HTML_TEMPLATE = """
             background-color: #0b141a;
             background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
             background-size: 24px 24px;
-            box-sizing: border-box;
         }
 
-        /* Kotak Enkripsi End-to-End Kuning */
+        /* Kotak Enkripsi Kuning */
         .encryption-notice {
             background-color: #182229;
             color: #ffd279;
@@ -254,7 +250,7 @@ HTML_TEMPLATE = """
         }
         .emoji-item:hover { background-color: #2a3942; }
 
-        /* Footer Input WhatsApp Android (Selalu Terkunci di Bawah) */
+        /* Footer Input WhatsApp Android */
         .wa-input-area {
             background-color: #0b141a;
             padding: 8px 10px;
@@ -262,7 +258,6 @@ HTML_TEMPLATE = """
             align-items: center;
             gap: 8px;
             height: 60px;
-            box-sizing: border-box;
             flex-shrink: 0;
             z-index: 10;
         }
@@ -366,7 +361,7 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Area Input WhatsApp Android (Terkunci Pas di Bawah) -->
+        <!-- Area Input WhatsApp Android (Flexbox Bawah) -->
         <div class="wa-input-area">
             <div class="input-wrapper">
                 <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
