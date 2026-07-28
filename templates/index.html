@@ -360,7 +360,7 @@
     </style>
 </head>
 <body>
-    
+
     <div class="wa-mobile-container">
         <!-- Header WhatsApp -->
         <div class="wa-header">
@@ -411,17 +411,7 @@
                 🔒 Pesan dan telepon terenkripsi secara end-to-end. Hanya orang di obrolan ini yang bisa membaca, mendengarkan, atau membagikannya. <b>Pelajari selengkapnya.</b>
             </div>
             <div class="chat-date-badge">Hari ini</div>
-
-            <!-- Pesan Pembuka Pertama (Rata Kiri, Rapi, & Ukuran Pas) -->
-            <div class="message bot">
-                ✨ <b>{{ salam }}</b> ✨<br><br>
-                🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br>
-                <i>(Contoh: 3.500.000 atau 3500000)</i>
-                <div class="message-meta">
-                    <span class="time" id="initialTime"></span>
-                </div>
-            </div>
+            <!-- Pesan pembuka akan dimunculkan satu per satu secara otomatis via script -->
         </div>
 
         <!-- Area Input WhatsApp -->
@@ -443,8 +433,6 @@
             return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        document.getElementById('initialTime').innerText = getCurrentTime();
-
         const inputField = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const emojiBtn = document.getElementById('emojiBtn');
@@ -454,6 +442,40 @@
         const menuToggle = document.getElementById('menuToggle');
         const dropdownMenu = document.getElementById('dropdownMenu');
         const subStatus = document.getElementById('subStatus');
+
+        // Jalankan opening bertahap saat pertama kali web dibuka
+        window.onload = function() {
+            jalankanOpeningBertahap();
+        };
+
+        function jalankanOpeningBertahap() {
+            const jam = new Date().getHours();
+            let salamWaktu = "SELAMAT MALAM 🌙";
+            if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI 🌅";
+            else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG ☀️";
+            else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE 🌇";
+
+            // Chat 1: Salam waktu & Home Credit Indonesia
+            const typingId1 = showTypingBubble();
+            subStatus.innerText = "mengetik...";
+
+            setTimeout(() => {
+                removeTypingBubble(typingId1);
+                subStatus.innerText = "online";
+                appendMessage(`✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b>`, 'bot');
+
+                // Chat 2: Masukkan harga barang dan contohnya
+                const typingId2 = showTypingBubble();
+                subStatus.innerText = "mengetik...";
+
+                setTimeout(() => {
+                    removeTypingBubble(typingId2);
+                    subStatus.innerText = "online";
+                    appendMessage(`📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`, 'bot');
+                }, 1200);
+
+            }, 1000);
+        }
 
         inputField.addEventListener("keypress", function(event) {
             if (event.key === "Enter") { 
@@ -517,26 +539,11 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru (Otomatis menyesuaikan waktu sapaan lokal dengan rapi)
+        // Fungsi Tombol Hitung Simulasi Baru (Memunculkan opening bertahap dari awal)
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
-            const typingId = showTypingBubble();
-            subStatus.innerText = "mengetik...";
-            
-            setTimeout(() => {
-                removeTypingBubble(typingId);
-                subStatus.innerText = "online";
-
-                const jam = new Date().getHours();
-                let salamWaktu = "SELAMAT MALAM";
-                if (jam >= 4 && jam < 11) salamWaktu = "SELAMAT PAGI";
-                else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG";
-                else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE";
-
-                const pesanBaru = `✨ <b>${salamWaktu}</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan masukkan Harga Barang baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
-                appendMessage(pesanBaru, 'bot');
-            }, 1000);
+            jalankanOpeningBertahap();
         };
 
         function appendMessage(text, sender, htmlButtons = '') {
