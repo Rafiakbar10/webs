@@ -414,7 +414,7 @@
             <div class="message bot">
                 ✨ <b>{{ salam }}</b> ✨<br><br>
                 🏢 <b>HOME CREDIT INDONESIA</b><br><br>
-                📦 Silakan ketik dan kirimkan <b>Harga Barang</b> yang ingin anda hitung:<br><br>
+                📦 Silakan ketik dan kirimkan Harga Barang yang ingin anda hitung:<br><br>
                 <i>(Contoh: 3.500.000 atau 3500000)</i>
                 <div class="message-meta">
                     <span class="time" id="initialTime"></span>
@@ -486,7 +486,6 @@
             emojiPicker.style.display = 'none';
             appendMessage(emoji, 'user');
             
-            // Tampilkan gelembung animasi mengetik (...)
             const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
             
@@ -516,6 +515,20 @@
             }
         });
 
+        // Fungsi Tombol Hitung Simulasi Baru tanpa menghapus chat lama
+        window.mulaiSimulasiBaru = function() {
+            step = 'GET_PRICE';
+            dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
+            const typingId = showTypingBubble();
+            subStatus.innerText = "mengetik...";
+            setTimeout(() => {
+                removeTypingBubble(typingId);
+                subStatus.innerText = "online";
+                const pesanBaru = `✨ <b>HOME CREDIT INDONESIA</b> ✨<br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang baru</b> yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                appendMessage(pesanBaru, 'bot');
+            }, 1000);
+        };
+
         function appendMessage(text, sender, htmlButtons = '') {
             const container = document.getElementById('chatContainer');
             const msgDiv = document.createElement('div');
@@ -539,7 +552,6 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Fungsi Memunculkan Gelembung Animasi Mengetik (...)
         function showTypingBubble() {
             const container = document.getElementById('chatContainer');
             const typingDiv = document.createElement('div');
@@ -583,7 +595,6 @@
             attachmentPopup.style.display = 'none';
             dropdownMenu.style.display = 'none';
 
-            // Tampilkan gelembung animasi mengetik (...) dan ubah status header
             const typingId = showTypingBubble();
             subStatus.innerText = "mengetik...";
 
