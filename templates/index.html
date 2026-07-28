@@ -31,7 +31,6 @@
             position: relative;
         }
 
-        /* Header WhatsApp Real */
         .wa-header {
             background-color: #202c33;
             padding: 8px 12px;
@@ -66,6 +65,10 @@
             font-size: 16px;
             color: white;
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .wa-contact-info {
+            cursor: pointer;
         }
         .wa-contact-info h3 {
             margin: 0;
@@ -84,9 +87,36 @@
             gap: 22px;
             font-size: 18px;
             color: #aebac1;
+            position: relative;
+        }
+        .wa-header-right span {
+            cursor: pointer;
         }
 
-        /* Ruang Chat & Wallpaper Doodle */
+        /* Menu Dropdown Titik Tiga */
+        .dropdown-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: #233138;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            min-width: 180px;
+        }
+        .dropdown-item {
+            padding: 12px 16px;
+            color: #e9edef;
+            font-size: 13.5px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-item:hover {
+            background-color: #182229;
+        }
+
         .wa-chat-container {
             flex: 1;
             padding: 12px 15px;
@@ -187,7 +217,6 @@
         }
         .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
 
-        /* Popup Emoji Picker */
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -212,7 +241,6 @@
         }
         .emoji-item:active { background-color: #374248; }
 
-        /* Footer Input WhatsApp */
         .wa-input-area {
             background-color: #0b141a;
             padding: 8px 10px;
@@ -254,7 +282,6 @@
         }
         .wa-input-area input::placeholder { color: #8696a0; }
         
-        /* Tombol Kirim Bulat di Ujung Kanan (Termasuk Tombol Kamera yang Berfungsi Kirim) */
         .send-btn-round {
             background-color: #00a884;
             border: none;
@@ -279,20 +306,25 @@
 <body>
 
     <div class="wa-mobile-container">
-        <!-- Header Real WhatsApp -->
+        <!-- Header WhatsApp -->
         <div class="wa-header">
             <div class="wa-header-left">
-                <span class="back-arrow">←</span>
-                <div class="wa-avatar">R</div>
-                <div class="wa-contact-info">
+                <span class="back-arrow" onclick="alert('Tidak bisa')">←</span>
+                <div class="wa-avatar" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">R</div>
+                <div class="wa-contact-info" onclick="window.open('https://share.google/3PPIeZmmVKsQZ0eHA', '_blank')">
                     <h3 class="wa-contact-name">Rafii</h3>
                     <p>online</p>
                 </div>
             </div>
             <div class="wa-header-right">
-                <span>📹</span>
-                <span>📞</span>
-                <span>⋮</span>
+                <span onclick="window.open('https://wa.me/6285935491278', '_blank')">📹</span>
+                <span onclick="window.open('https://wa.me/6285935491278', '_blank')">📞</span>
+                <span id="menuToggle">⋮</span>
+
+                <!-- Dropdown Titik Tiga -->
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="https://accounts.homecredit.co.id/credstore-fe/services/login?clientId=KpB3UVsfGaDUvwurVQTrbCsgpa5CUIgW" target="_blank" class="dropdown-item">Buka Website Home Credit</a>
+                </div>
             </div>
         </div>
 
@@ -328,7 +360,7 @@
             </div>
         </div>
 
-        <!-- Area Input WhatsApp dengan Tombol Kamera Berfungsi Kirim (➤) -->
+        <!-- Area Input WhatsApp -->
         <div class="wa-input-area">
             <div class="input-wrapper">
                 <button type="button" class="icon-btn" id="emojiBtn">😊</button>
@@ -354,6 +386,8 @@
         const emojiBtn = document.getElementById('emojiBtn');
         const attachBtn = document.getElementById('attachBtn');
         const emojiPicker = document.getElementById('emojiPicker');
+        const menuToggle = document.getElementById('menuToggle');
+        const dropdownMenu = document.getElementById('dropdownMenu');
 
         inputField.addEventListener("keypress", function(event) {
             if (event.key === "Enter") { 
@@ -368,6 +402,7 @@
         emojiBtn.onclick = function(e) {
             e.stopPropagation();
             emojiPicker.style.display = emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+            dropdownMenu.style.display = 'none';
         };
 
         window.addEmoji = function(emoji) {
@@ -380,11 +415,34 @@
             alert("ℹ️ Menu Lampiran:\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom pesan.");
         };
 
+        menuToggle.onclick = function(e) {
+            e.stopPropagation();
+            dropdownMenu.style.display = dropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+            emojiPicker.style.display = 'none';
+        };
+
         document.addEventListener('click', function(e) {
             if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
                 emojiPicker.style.display = 'none';
             }
+            if (!dropdownMenu.contains(e.target) && e.target !== menuToggle) {
+                dropdownMenu.style.display = 'none';
+            }
         });
+
+        // Fungsi Hitung Simulasi Baru tanpa menghapus chat lama
+        window.mulaiSimulasiBaru = function() {
+            step = 'GET_PRICE';
+            dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
+            
+            // Ambil salam waktu terbaru via fetch atau teks lokal
+            fetch('/')
+                .then(res => res.text())
+                .then(() => {
+                    const pesanBaru = `✨ <b>SELAMAT BARU</b> ✨<br><br>🏢 <b>HOME CREDIT INDONESIA</b><br><br>📦 Silakan ketik dan kirimkan <b>Harga Barang</b> baru yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`;
+                    appendMessage(pesanBaru, 'bot');
+                });
+        };
 
         function appendMessage(text, sender, htmlButtons = '') {
             const container = document.getElementById('chatContainer');
@@ -416,6 +474,7 @@
             appendMessage(text, 'user');
             inputField.value = '';
             emojiPicker.style.display = 'none';
+            dropdownMenu.style.display = 'none';
 
             try {
                 const response = await fetch('/process', {
