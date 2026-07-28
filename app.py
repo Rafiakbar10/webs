@@ -41,102 +41,140 @@ HTML_TEMPLATE = """
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Cicilan HCI - iPhone Style</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp - Simulasi Cicilan HCI</title>
     <style>
         body {
-            background-color: #111b21;
+            background-color: #0b141a;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden;
         }
 
-        /* Bingkai / Frame ala iPhone */
-        .iphone-frame {
+        /* Kontainer Utama Full Layar ala WhatsApp HP */
+        .wa-mobile-container {
             width: 100%;
-            max-width: 420px;
-            height: 100vh;
-            max-height: 880px;
+            height: 100%;
+            max-width: 500px;
             background-color: #0b141a;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            border-radius: 0;
             overflow: hidden;
         }
 
-        @media (min-width: 480px) {
-            .iphone-frame {
-                border-radius: 40px;
-                border: 10px solid #272727;
-                height: 90vh;
+        @media (min-width: 500px) {
+            .wa-mobile-container {
+                height: 92vh;
+                max-height: 850px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+                border: 1px solid #222d34;
             }
         }
 
-        /* Header WhatsApp */
+        /* Header WhatsApp Android Asli */
         .wa-header {
             background-color: #202c33;
-            padding: 12px 15px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #222d34;
+            justify-content: space-between;
             height: 60px;
             box-sizing: border-box;
             z-index: 10;
+            color: #aebac1;
+        }
+        .wa-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .back-arrow {
+            font-size: 20px;
+            cursor: pointer;
+            color: #aebac1;
         }
         .wa-avatar {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
+            background-color: #6a5acd;
             border-radius: 50%;
-            overflow: hidden;
-            margin-right: 12px;
-            flex-shrink: 0;
-            border: 1px solid #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
         }
-        .wa-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .wa-info h3 {
+        .wa-contact-name {
             margin: 0;
             font-size: 16px;
             color: #e9edef;
             font-weight: 500;
         }
-        .wa-info p {
-            margin: 2px 0 0 0;
-            font-size: 12px;
-            color: #00a884;
-            font-weight: 500;
+        .wa-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 18px;
+        }
+        .wa-header-right span {
+            cursor: pointer;
         }
 
-        /* Ruang Chat Wallpaper */
+        /* Ruang Chat dengan Wallpaper Doodle Khas WhatsApp */
         .wa-chat-container {
             flex: 1;
-            padding: 15px;
+            padding: 12px 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             background-color: #0b141a;
+            /* Pola Doodle Wallpaper WA */
             background-image: radial-gradient(#111b21 1.2px, transparent 1.2px);
-            background-size: 20px 20px;
+            background-size: 24px 24px;
             box-sizing: border-box;
         }
 
-        .message {
-            max-width: 85%;
-            padding: 9px 12px;
+        /* Kotak Enkripsi End-to-End Kuning */
+        .encryption-notice {
+            background-color: #182229;
+            color: #ffd279;
+            font-size: 11.5px;
+            text-align: center;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 14px;
+            margin: 4px auto 10px auto;
+            max-width: 90%;
             line-height: 1.4;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.3);
+        }
+
+        .chat-date-badge {
+            background-color: #182229;
+            color: #8696a0;
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            align-self: center;
+            margin: 6px 0;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
+        }
+
+        /* Gelembung Pesan */
+        .message {
+            max-width: 82%;
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            font-size: 14px;
+            line-height: 1.45;
             word-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
@@ -147,7 +185,6 @@ HTML_TEMPLATE = """
             color: #e9edef;
             align-self: flex-start;
             border-top-left-radius: 0;
-            border-left: 4px solid #00a884;
         }
         .message.user {
             background-color: #005c4b;
@@ -159,10 +196,10 @@ HTML_TEMPLATE = """
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 4px;
+            gap: 3px;
             margin-top: 3px;
             float: right;
-            margin-left: 10px;
+            margin-left: 8px;
         }
         .time {
             font-size: 10px;
@@ -179,7 +216,7 @@ HTML_TEMPLATE = """
             display: flex;
             flex-direction: column;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .wa-btn {
             background-color: #005c4b;
@@ -223,17 +260,26 @@ HTML_TEMPLATE = """
         }
         .emoji-item:hover { background-color: #2a3942; }
 
-        /* Footer Input WhatsApp */
+        /* Footer Input WhatsApp Android */
         .wa-input-area {
-            background-color: #202c33;
-            padding: 10px 12px;
+            background-color: #0b141a;
+            padding: 8px 10px;
             display: flex;
             align-items: center;
             gap: 8px;
             height: 60px;
             box-sizing: border-box;
-            border-top: 1px solid #222d34;
             z-index: 10;
+        }
+        .input-wrapper {
+            flex: 1;
+            background-color: #202c33;
+            display: flex;
+            align-items: center;
+            border-radius: 24px;
+            padding: 0 12px;
+            gap: 8px;
+            height: 44px;
         }
         .wa-input-area .icon-btn {
             background: none;
@@ -242,45 +288,54 @@ HTML_TEMPLATE = """
             font-size: 20px;
             cursor: pointer;
             padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .wa-input-area input {
             flex: 1;
-            background-color: #2a3942;
+            background: transparent;
             border: none;
-            padding: 10px 14px;
-            border-radius: 20px;
             color: white;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
         }
         .wa-input-area input::placeholder { color: #8696a0; }
-        .wa-input-area .send-btn {
+        
+        /* Tombol Mikrofon / Kirim Bulat di Ujung Kanan */
+        .mic-send-btn {
             background-color: #00a884;
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 16px;
             flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
-    <div class="iphone-frame">
-        <!-- Header -->
+    <div class="wa-mobile-container">
+        <!-- Header WhatsApp Android -->
         <div class="wa-header">
-            <div class="wa-avatar">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=60" alt="Profil">
+            <div class="wa-header-left">
+                <span class="back-arrow">←</span>
+                <div class="wa-avatar">R</div>
+                <div>
+                    <h3 class="wa-contact-name">Rafii</h3>
+                </div>
             </div>
-            <div class="wa-info">
-                <h3>Simulasi Cicilan HCI</h3>
-                <p>online</p>
+            <div class="wa-header-right">
+                <span>📹</span>
+                <span>📞</span>
+                <span>⋮</span>
             </div>
         </div>
 
@@ -300,6 +355,11 @@ HTML_TEMPLATE = """
 
         <!-- Ruang Chat -->
         <div class="wa-chat-container" id="chatContainer">
+            <div class="encryption-notice">
+                🔒 Pesan dan telepon terenkripsi secara end-to-end. Hanya orang di obrolan ini yang bisa membaca, mendengarkan, atau membagikannya. <b>Pelajari selengkapnya.</b>
+            </div>
+            <div class="chat-date-badge">Hari ini</div>
+
             <div class="message bot">
                 ✨ <b>{{ salam }}</b> ✨<br><br>
                 🏢 <b>HOME CREDIT INDONESIA</b><br><br>
@@ -311,12 +371,15 @@ HTML_TEMPLATE = """
             </div>
         </div>
 
-        <!-- Area Input -->
+        <!-- Area Input WhatsApp Android (Kotak dengan Emoji, Lampiran, Kamera, & Mic/Kirim) -->
         <div class="wa-input-area">
-            <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
-            <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
-            <input type="text" id="userInput" placeholder="Ketik pesan" autocomplete="off">
-            <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+            <div class="input-wrapper">
+                <button type="button" class="icon-btn" onclick="toggleEmojiPicker(event)">😊</button>
+                <input type="text" id="userInput" placeholder="Pesan" autocomplete="off">
+                <button type="button" class="icon-btn" onclick="showInfoAttach()">📎</button>
+                <button type="button" class="icon-btn" onclick="showInfoAttach()">📷</button>
+            </div>
+            <button type="button" class="mic-send-btn" id="sendMicBtn" onclick="handleSendAction()">🎤</button>
         </div>
     </div>
 
@@ -331,9 +394,28 @@ HTML_TEMPLATE = """
         document.getElementById('initialTime').innerText = getCurrentTime();
 
         const inputField = document.getElementById('userInput');
-        inputField.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { sendMessage(); }
+        const sendMicBtn = document.getElementById('sendMicBtn');
+
+        // Ubah ikon tombol kanan dari Mic (🎤) menjadi Kirim (➤) saat mulai mengetik
+        inputField.addEventListener("input", function() {
+            if (inputField.value.trim().length > 0) {
+                sendMicBtn.innerHTML = "➤";
+            } else {
+                sendMicBtn.innerHTML = "🎤";
+            }
         });
+
+        inputField.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { handleSendAction(); }
+        });
+
+        function handleSendAction() {
+            if (inputField.value.trim().length > 0) {
+                sendMessage();
+            } else {
+                alert("🎤 Fitur suara belum aktif. Silakan ketik nominal pesan.");
+            }
+        }
 
         function toggleEmojiPicker(e) {
             e.stopPropagation();
@@ -345,10 +427,11 @@ HTML_TEMPLATE = """
             inputField.value += emoji;
             document.getElementById('emojiPicker').style.display = 'none';
             inputField.focus();
+            sendMicBtn.innerHTML = "➤";
         }
 
         function showInfoAttach() {
-            alert("ℹ️ Menu Lampiran (📎):\\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom chat.");
+            alert("ℹ️ Menu Tambahan:\nSilakan ketik nominal Harga Barang atau DP secara langsung pada kolom pesan.");
         }
 
         document.addEventListener('click', function(e) {
@@ -387,6 +470,7 @@ HTML_TEMPLATE = """
 
             appendMessage(text, 'user');
             inputField.value = '';
+            sendMicBtn.innerHTML = "🎤";
             document.getElementById('emojiPicker').style.display = 'none';
 
             try {
