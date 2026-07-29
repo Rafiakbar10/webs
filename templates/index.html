@@ -190,22 +190,25 @@
         }
 
         .message {
-            max-width: 82%;
-            padding: 9px 12px;
+            max-width: 85%;
+            padding: 10px 12px;
             border-radius: 7.5px;
-            font-size: 14.5px;
+            font-size: 14px;
             line-height: 1.45;
             word-wrap: break-word;
+            overflow-wrap: break-word;
             position: relative;
             white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
             text-align: left !important;
+            clear: both;
         }
         .message.bot {
             background-color: #202c33;
             color: #e9edef;
             align-self: flex-start;
             border-top-left-radius: 0;
+            overflow: hidden; /* Mencegah isi di dalam meluber keluar kotak */
         }
         .message.user {
             background-color: #005c4b;
@@ -213,6 +216,7 @@
             align-self: flex-end;
             border-top-right-radius: 0;
         }
+
         .message-meta {
             display: flex;
             align-items: center;
