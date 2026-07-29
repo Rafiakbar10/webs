@@ -188,7 +188,6 @@
             box-shadow: 0 1px 1px rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
-
         .message {
             max-width: 85%;
             padding: 10px 12px;
@@ -201,14 +200,13 @@
             white-space: pre-wrap;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.2);
             text-align: left !important;
-            clear: both;
         }
         .message.bot {
             background-color: #202c33;
             color: #e9edef;
             align-self: flex-start;
             border-top-left-radius: 0;
-            overflow: hidden; /* Mencegah isi di dalam meluber keluar kotak */
+            overflow: hidden; /* Mengunci konten agar tidak keluar dari kotak */
         }
         .message.user {
             background-color: #005c4b;
@@ -216,6 +214,15 @@
             align-self: flex-end;
             border-top-right-radius: 0;
         }
+        
+        /* Mencegah garis di dalam pesan bot meluber keluar */
+        .message.bot hr {
+            border: none;
+            border-top: 1px solid #374248;
+            margin: 8px 0;
+            width: 100%;
+        }
+
 
         .message-meta {
             display: flex;
