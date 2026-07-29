@@ -94,7 +94,7 @@ def process():
             dp = data["dp"]
             sisa_pokok = harga - dp
 
-            pilihan_valid = [3, 6, 9, 12] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 15, 18, 21, 24]
+            pilihan_valid = [3, 6, 9, 12] if 500_000 <= sisa_pokok <= 5_000_000 else [3, 6, 9, 12, 14, 15, 18, 21, 24]
 
             if tenor_input not in pilihan_valid:
                 return jsonify({"next_step": "GET_TENOR", "data": data, "reply": f"⚠️ Tenor tidak ada di pilihan!\nSilakan masukkan tenor yang tersedia: ({', '.join(map(str, pilihan_valid))}) bulan."})
