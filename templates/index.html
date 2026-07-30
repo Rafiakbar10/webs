@@ -155,7 +155,6 @@
             font-size: 20px;
             color: #00a884;
         }
-        /* Tombol Kembali ke Chat ala Glassmorphism iPhone */
         .btn-back-chat {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -166,13 +165,7 @@
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .btn-back-chat:active {
-            background: rgba(0, 168, 132, 0.3);
-            border-color: #00a884;
-        }
-
         .catalog-body {
             flex: 1;
             padding: 16px;
@@ -184,7 +177,6 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
         }
-        /* Kartu Brand dengan Efek Kaca iPhone */
         .brand-card {
             background: rgba(32, 44, 51, 0.55);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -195,26 +187,12 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.2s ease;
         }
-        .brand-card:active {
-            transform: scale(0.96);
-            background: rgba(42, 57, 66, 0.7);
-            border-color: rgba(0, 168, 132, 0.5);
-        }
-        .brand-card h4 {
-            margin: 0;
-            font-size: 15px;
-            color: #e9edef;
-            font-weight: 600;
-        }
-
         .phone-list-view {
             display: none;
             flex-direction: column;
             gap: 10px;
         }
-        /* Kartu Item HP dengan Efek Kaca iPhone */
         .phone-card {
             background: rgba(32, 44, 51, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -226,12 +204,6 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s;
-        }
-        .phone-card:active {
-            background: rgba(42, 57, 66, 0.8);
-            border-color: #00a884;
         }
         .phone-name {
             font-weight: 600;
@@ -381,6 +353,39 @@
             40% { transform: scale(1.0); }
         }
 
+        /* PERBAIKAN TAMPILAN TOMBOL UTUH SEPERTI DI GAMBAR */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+            width: 100%;
+        }
+        .wa-btn {
+            display: block;
+            width: 100%;
+            background-color: #00a884;
+            color: white;
+            border: none;
+            padding: 12px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14.5px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .wa-btn:hover {
+            opacity: 0.9;
+        }
+        .wa-btn.secondary {
+            background-color: #2a3942;
+            color: #e9edef;
+            font-weight: 500;
+        }
+
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -500,11 +505,9 @@
                     <span class="catalog-back" id="catalogBackBtn" onclick="backToBrands()" style="display: none;">←</span>
                     <span id="catalogTitle">Daftar Merek HP</span>
                 </div>
-                <!-- Tombol Kembali ke Chat ala iPhone -->
                 <button class="btn-back-chat" onclick="closeCatalogModal()">✕ Tutup</button>
             </div>
             <div class="catalog-body">
-                <!-- Tampilan 1: Pilihan Merek (Brand Grid) -->
                 <div class="brand-grid" id="brandGridView">
                     <div class="brand-card" onclick="openBrand('Samsung')">
                         <h4>📱 Samsung</h4>
@@ -523,7 +526,6 @@
                     </div>
                 </div>
 
-                <!-- Tampilan 2: Daftar HP Berdasarkan Merek yang Dipilih -->
                 <div class="phone-list-view" id="phoneListView">
                     <p style="font-size: 13px; color: #8696a0; margin-bottom: 10px;">💡 <i>Klik HP di bawah untuk otomatis memasukkan harganya ke simulasi:</i></p>
                     <div id="phoneItemsContainer"></div>
@@ -559,7 +561,6 @@
                 🔒 Pesan dan telepon terenkripsi secara end-to-end. Hanya orang di obrolan ini yang bisa membaca, mendengarkan, atau membagikannya. <b>Pelajari selengkapnya.</b>
             </div>
             <div class="chat-date-badge">Hari ini</div>
-            <!-- Pesan pembuka akan dimunculkan satu per satu secara otomatis via script -->
         </div>
 
         <!-- Area Input WhatsApp -->
@@ -597,7 +598,6 @@
         const catalogTitle = document.getElementById('catalogTitle');
         const catalogBackBtn = document.getElementById('catalogBackBtn');
 
-        // Data Database HP Berdasarkan Merek
         const databaseHP = {
             'Samsung': [
                 { nama: 'Samsung Galaxy A15', harga: 3500000 },
@@ -629,7 +629,6 @@
             ]
         };
 
-        // Fungsi Buka & Tutup Katalog Modal
         function openCatalogModal() {
             dropdownMenu.style.display = 'none';
             catalogModal.style.display = 'flex';
@@ -639,7 +638,6 @@
             catalogModal.style.display = 'none';
         }
 
-        // Buka daftar HP berdasarkan merek yang diklik
         function openBrand(brandName) {
             catalogTitle.innerText = brandName;
             catalogBackBtn.style.display = 'inline-block';
@@ -661,7 +659,6 @@
             });
         }
 
-        // Kembali ke menu pilihan merek
         function backToBrands() {
             catalogTitle.innerText = 'Daftar Merek HP';
             catalogBackBtn.style.display = 'none';
@@ -669,7 +666,6 @@
             phoneListView.style.display = 'none';
         }
 
-        // Jalankan opening bertahap saat pertama kali web dibuka
         window.onload = function() {
             jalankanOpeningBertahap();
         };
@@ -681,7 +677,6 @@
             else if (jam >= 11 && jam < 15) salamWaktu = "SELAMAT SIANG ☀️";
             else if (jam >= 15 && jam < 18) salamWaktu = "SELAMAT SORE 🌇";
 
-            // Chat 1: Salam waktu & Home Credit Indonesia
             const typingId1 = showTypingBubble();
             subStatus.innerText = "mengetik...";
 
@@ -690,14 +685,13 @@
                 subStatus.innerText = "online";
                 appendMessage(`✨ <b>${salamWaktu}</b> ✨<br>`, 'bot');
 
-                // Chat 2: Masukkan harga barang dan contohnya
                 const typingId2 = showTypingBubble();
                 subStatus.innerText = "mengetik...";
 
                 setTimeout(() => {
                     removeTypingBubble(typingId2);
                     subStatus.innerText = "online";
-                    appendMessage(`📦 Silakan masukkan Harga Barang yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i><br><br>🛍️ Mau cari referensi harga HP idaman dulu? Cuss klik titik tiga (⋮) di pojok kanan atas, lalu pilih "📊 Daftar Harga HP" ya! ✨<br>`, 'bot');
+                    appendMessage(`📦 Yuk, masukkan nominal <b>Harga Barang</b> yang mau kamu hitung cicilannya:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i><br><br>🛍️ <i>Mau cari referensi harga HP idaman? Cuss klik titik tiga (<b>⋮</b>) di kanan atas, lalu pilih <b>"📊 Daftar Harga HP"</b> ya!</i> ✨🔥`, 'bot');
                 }, 1200);
 
             }, 1000);
@@ -765,7 +759,6 @@
             }
         });
 
-        // Fungsi Tombol Hitung Simulasi Baru (Memunculkan opening bertahap dari awal)
         window.mulaiSimulasiBaru = function() {
             step = 'GET_PRICE';
             dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
