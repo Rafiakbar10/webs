@@ -117,60 +117,96 @@
             background-color: #182229;
         }
 
-        /* Tampilan Modal Katalog/Daftar Harga HP di Dalam Website */
+        /* Tampilan Katalog HP Gaya Kaca iPhone (Glassmorphism) */
         .catalog-modal {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #0b141a;
+            background: rgba(11, 20, 26, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 2000;
             display: none;
             flex-direction: column;
         }
         .catalog-header {
-            background-color: #202c33;
+            background: rgba(32, 44, 51, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
             color: #e9edef;
             font-size: 16px;
-            font-weight: 500;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            font-weight: 600;
+            height: 60px;
+        }
+        .catalog-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .catalog-back {
             cursor: pointer;
             font-size: 20px;
+            color: #00a884;
         }
+        /* Tombol Kembali ke Chat ala Glassmorphism iPhone */
+        .btn-back-chat {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            color: #e9edef;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-back-chat:active {
+            background: rgba(0, 168, 132, 0.3);
+            border-color: #00a884;
+        }
+
         .catalog-body {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             overflow-y: auto;
             color: #e9edef;
         }
         .brand-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 14px;
         }
+        /* Kartu Brand dengan Efek Kaca iPhone */
         .brand-card {
-            background-color: #202c33;
-            padding: 20px;
-            border-radius: 10px;
+            background: rgba(32, 44, 51, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 22px 15px;
+            border-radius: 16px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            transition: background 0.2s;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.2s ease;
         }
-        .brand-card:hover {
-            background-color: #2a3942;
+        .brand-card:active {
+            transform: scale(0.96);
+            background: rgba(42, 57, 66, 0.7);
+            border-color: rgba(0, 168, 132, 0.5);
         }
         .brand-card h4 {
             margin: 0;
-            font-size: 16px;
-            color: #00a884;
+            font-size: 15px;
+            color: #e9edef;
+            font-weight: 600;
         }
 
         .phone-list-view {
@@ -178,28 +214,34 @@
             flex-direction: column;
             gap: 10px;
         }
+        /* Kartu Item HP dengan Efek Kaca iPhone */
         .phone-card {
-            background-color: #202c33;
-            padding: 12px 15px;
-            border-radius: 8px;
+            background: rgba(32, 44, 51, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 14px 16px;
+            border-radius: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
         }
-        .phone-card:hover {
-            background-color: #2a3942;
+        .phone-card:active {
+            background: rgba(42, 57, 66, 0.8);
+            border-color: #00a884;
         }
         .phone-name {
             font-weight: 600;
-            font-size: 14.5px;
+            font-size: 14px;
             color: #e9edef;
         }
         .phone-price {
             color: #00a884;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13.5px;
         }
 
         .attachment-popup {
@@ -339,26 +381,6 @@
             40% { transform: scale(1.0); }
         }
 
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .wa-btn {
-            background-color: #005c4b;
-            color: white;
-            border: none;
-            padding: 9px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13.5px;
-            font-weight: 500;
-            text-align: center;
-            text-decoration: none;
-        }
-        .wa-btn.whatsapp { background-color: #00a884; font-weight: 600; }
-
         .emoji-picker {
             position: absolute;
             bottom: 70px;
@@ -471,11 +493,15 @@
             </div>
         </div>
 
-        <!-- Tampilan Katalog HP Berkelompok (Modal di Dalam Website) -->
+        <!-- Tampilan Katalog HP Gaya Kaca iPhone (Glassmorphism) -->
         <div class="catalog-modal" id="catalogModal">
             <div class="catalog-header">
-                <span class="catalog-back" id="catalogBackBtn" onclick="backToBrands()" style="display: none;">←</span>
-                <span id="catalogTitle">Daftar Merek HP</span>
+                <div class="catalog-header-left">
+                    <span class="catalog-back" id="catalogBackBtn" onclick="backToBrands()" style="display: none;">←</span>
+                    <span id="catalogTitle">Daftar Merek HP</span>
+                </div>
+                <!-- Tombol Kembali ke Chat ala iPhone -->
+                <button class="btn-back-chat" onclick="closeCatalogModal()">✕ Tutup</button>
             </div>
             <div class="catalog-body">
                 <!-- Tampilan 1: Pilihan Merek (Brand Grid) -->
@@ -671,7 +697,7 @@
                 setTimeout(() => {
                     removeTypingBubble(typingId2);
                     subStatus.innerText = "online";
-                    appendMessage(`📦 Silakan masukkan Harga Barang yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i>`, 'bot');
+                    appendMessage(`📦 Silakan masukkan Harga Barang yang ingin anda hitung:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i><br><br>🛍️ Mau cari referensi harga HP idaman dulu? Cuss klik titik tiga (⋮) di pojok kanan atas, lalu pilih "📊 Daftar Harga HP" ya! ✨<br>`, 'bot');
                 }, 1200);
 
             }, 1000);
