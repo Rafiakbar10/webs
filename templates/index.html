@@ -474,7 +474,171 @@
     </style>
 </head>
 <body>
-000 },
+
+    <div class="wa-mobile-container">
+        <!-- Header WhatsApp -->
+        <div class="wa-header">
+            <div class="wa-header-left">
+                <span class="back-arrow" onclick="alert('Halaman ini lagi sayang-sayangnya sama kamu, jadi belum boleh pergi. 🤣❤️')">←</span>
+                <div class="wa-avatar" onclick="window.open('https://maps.app.goo.gl/zPHxjsR5kXiSmEFR6', '_blank')">🔥</div>
+                <div class="wa-contact-info" onclick="window.open('https://maps.app.goo.gl/zPHxjsR5kXiSmEFR6', '_blank')">
+                    <h3 class="wa-contact-name" id="headerStatus">Simulasi Cicilan HCI</h3>
+                    <p id="subStatus">online</p>
+                </div>
+            </div>
+            <div class="wa-header-right">
+                <span onclick="window.open('https://wa.me/6285935491278', '_blank')">📹</span>
+                <span onclick="window.open('https://wa.me/6285935491278', '_blank')">📞</span>
+                <span id="menuToggle">⋮</span>
+
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="openCatalogModal()">📱 Daftar Harga HP</div>
+                    <a href="https://accounts.homecredit.co.id/credstore-fe/services/login?clientId=KpB3UVsfGaDUvwurVQTrbCsgpa5CUIgW" target="_blank" class="dropdown-item">Buka Website Home Credit</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tampilan Katalog HP Gaya Kaca iPhone (Glassmorphism) -->
+        <div class="catalog-modal" id="catalogModal">
+            <div class="catalog-header">
+                <div class="catalog-header-left">
+                    <span class="catalog-back" id="catalogBackBtn" onclick="backToBrands()" style="display: none;">←</span>
+                    <span id="catalogTitle">Daftar Merek HP</span>
+                </div>
+                <button class="btn-back-chat" onclick="closeCatalogModal()">✕ Tutup</button>
+            </div>
+            <div class="catalog-body">
+                <div class="brand-grid" id="brandGridView">
+                    <div class="brand-card" onclick="openBrand('iPhone')">
+                        <h4>📱 iPhone</h4>
+                    </div>
+                    <div class="brand-card" onclick="openBrand('Samsung')">
+                        <h4>📱 Samsung</h4>
+                    </div>
+                    <div class="brand-card" onclick="openBrand('OPPO')">
+                        <h4>📱 Oppo</h4>
+                    </div>
+                    <div class="brand-card" onclick="openBrand('Xiaomi')">
+                        <h4>📱 Xiaomi / Redmi</h4>
+                    </div>
+                    <div class="brand-card" onclick="openBrand('Vivo')">
+                        <h4>📱 Vivo</h4>
+                    </div>
+                </div>
+
+                <div class="phone-list-view" id="phoneListView">
+                    <p style="font-size: 13px; color: #8696a0; margin-bottom: 10px;">💡 <i>Klik HP di bawah untuk otomatis memasukkan harganya ke simulasi:</i></p>
+                    <div id="phoneItemsContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup Emoji Interaktif -->
+        <div class="emoji-picker" id="emojiPicker">
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('😊', 'Halo Kak! Senang bisa melayani Anda. 😊')">😊</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('👍', 'Mantap sekali Kak! 👍 Silakan lanjut masukkan data cicilannya ya.')">👍</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🔥', 'Semangat Kak! 🔥 Kita hitung simulasi cicilan terbaik hari ini.')">🔥</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('⭐', 'Terima kasih rating bintangnya Kak! ⭐ Pelayanan terbaik untuk Anda.')">⭐</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🤝', 'Kerja sama yang baik Kak! 🤝 Silakan lanjutkan simulasinya.')">🤝</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('📱', 'Mau ambil gadget/HP apa nih Kak? 📱 Yuk hitung cicilannya di sini!')">📱</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('💻', 'Mau ambil laptop atau elektronik impian Kak? 💻 Silakan masukkan harganya.')">💻</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('💸', 'Cicilan ringan & aman bersama Home Credit! 💸')">💸</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('✨', 'Wwwhii asik banget ada promo menarik nih! ✨')">✨</button>
+            <button class="emoji-item" type="button" onclick="sendEmojiReaction('🙏', 'Terima kasih banyak ya Kak! 🙏 Semoga harinya menyenangkan.')">🙏</button>
+        </div>
+
+        <!-- Popup Menu Lampiran (📎) -->
+        <div class="attachment-popup" id="attachmentPopup">
+            <div class="attachment-item" onclick="selectAttachment('📄 Syarat Pengajuan: Cukup KTP Asli + Usia minimal 18 tahun.')">📄 <span>Syarat Pengajuan</span></div>
+            <div class="attachment-item" onclick="selectAttachment('🏷️ Info Promo: Nikmati cicilan bunga ringan & promo Free 2x Angsuran!')">🏷️ <span>Info Promo</span></div>
+            <div class="attachment-item" onclick="window.open('https://maps.app.goo.gl/zPHxjsR5kXiSmEFR6', '_blank')">📍 <span>Lokasi Toko Partner</span></div>
+            <div class="attachment-item" onclick="window.open('https://wa.me/6285935491278', '_blank')">💬 <span>Hubungi CS WhatsApp</span></div>
+        </div>
+
+        <!-- Ruang Chat -->
+        <div class="wa-chat-container" id="chatContainer">
+            <div class="encryption-notice">
+                🔒 Pesan dan telepon terenkripsi secara end-to-end. Hanya orang di obrolan ini yang bisa membaca, mendengarkan, atau membagikannya. <b>Pelajari selengkapnya.</b>
+            </div>
+            <div class="chat-date-badge">Hari ini</div>
+        </div>
+
+        <!-- Area Input WhatsApp -->
+        <div class="wa-input-area">
+            <div class="input-wrapper">
+                <button type="button" class="icon-btn" id="emojiBtn">😊</button>
+                <input type="text" id="userInput" placeholder="Pesan" autocomplete="off">
+                <button type="button" class="icon-btn" id="attachBtn">📎</button>
+            </div>
+            <button type="button" class="send-btn-round" id="sendBtn" title="Kirim Pesan">➤</button>
+        </div>
+    </div>
+
+    <script>
+        let step = 'GET_PRICE';
+        let dataSimulasi = { harga: 0, dp: 0, tenor: 0 };
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        const inputField = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const attachBtn = document.getElementById('attachBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const attachmentPopup = document.getElementById('attachmentPopup');
+        const menuToggle = document.getElementById('menuToggle');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const subStatus = document.getElementById('subStatus');
+        const catalogModal = document.getElementById('catalogModal');
+        const brandGridView = document.getElementById('brandGridView');
+        const phoneListView = document.getElementById('phoneListView');
+        const phoneItemsContainer = document.getElementById('phoneItemsContainer');
+        const catalogTitle = document.getElementById('catalogTitle');
+        const catalogBackBtn = document.getElementById('catalogBackBtn');
+
+        const databaseHP = {
+            'Samsung': [
+                { nama: 'Samsung Galaxy A15', harga: 3500000 },
+                { nama: 'Samsung Galaxy A35 5G', harga: 4800000 },
+                { nama: 'Samsung Galaxy A55 5G', harga: 5900000 },
+                { nama: 'Samsung Galaxy S24', harga: 13999000 }
+            ],
+            'OPPO': [
+                { nama: 'OPPO A58', harga: 2700000 },
+                { nama: 'OPPO A79 5G', harga: 3700000 },
+                { nama: 'OPPO Reno11 F', harga: 3900000 },
+                { nama: 'OPPO Reno11 Pro', harga: 8999000 }
+            ],
+            'Vivo': [
+                { nama: 'Vivo Y100', harga: 3100000 },
+                { nama: 'Vivo Y28', harga: 2400000 },
+                { nama: 'Vivo V30e', harga: 4500000 },
+                { nama: 'Vivo V30 Pro', harga: 8999000 }
+            ],
+            'Xiaomi': [
+                { nama: 'Redmi 15 8/128', harga: 2699000 },
+                { nama: 'Redmi 15 8/256', harga: 2899000 },
+                { nama: 'Redmi 15C 8/128', harga: 2349000 },
+                { nama: 'Redmi 15C 8/256', harga: 2549000 },
+                { nama: 'Redmi Note 15 8/128', harga: 3199000 },
+                { nama: 'Redmi Note 15 8/256', harga: 3999000 },
+                { nama: 'Redmi Note 15 5G 6/128', harga: 3499000 },
+                { nama: 'Redmi Note 15 5G 8/256', harga: 4199000 },
+                { nama: 'Redmi Note 15 Pro 5G 8/256', harga: 5099000 },
+                { nama: 'Redmi Note 15 Pro 5G 12/512', harga: 5999000 },
+                { nama: 'Redmi Note 15 Pro+ 5G 8/256', harga: 6399000 },
+                { nama: 'Redmi Note 15 Pro+ 5G 12/512', harga: 7199000 },
+                { nama: 'Xiaomi 14', harga: 11999000 }
+            ],
+            'iPhone': [
+                { nama: 'iPhone 15 128GB', harga: 12499000 },
+                { nama: 'iPhone 15 256GB', harga: 15249000 },
+                { nama: 'iPhone 16 128GB', harga: 14999000 },
+                { nama: 'iPhone 16 256GB', harga: 15499000 },
+                { nama: 'iPhone 17 256GB', harga: 17999000 },
+                { nama: 'iPhone 17 512GB', harga: 22249000 },
                 { nama: 'iPhone 17 Pro 256GB', harga: 24499000 },
                 { nama: 'iPhone 17 512GB', harga: 28999000 },
                 { nama: 'iPhone 17 Promax 256GB', harga: 26499000 },
