@@ -492,7 +492,7 @@
                 <span id="menuToggle">⋮</span>
 
                 <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-item" onclick="openCatalogModal()">📊 Daftar Harga HP</div>
+                    <div class="dropdown-item" onclick="openCatalogModal()">📱 Daftar Harga HP</div>
                     <a href="https://accounts.homecredit.co.id/credstore-fe/services/login?clientId=KpB3UVsfGaDUvwurVQTrbCsgpa5CUIgW" target="_blank" class="dropdown-item">Buka Website Home Credit</a>
                 </div>
             </div>
@@ -509,20 +509,20 @@
             </div>
             <div class="catalog-body">
                 <div class="brand-grid" id="brandGridView">
+                    <div class="brand-card" onclick="openBrand('iPhone')">
+                        <h4>📱 iPhone</h4>
+                    </div>
                     <div class="brand-card" onclick="openBrand('Samsung')">
                         <h4>📱 Samsung</h4>
                     </div>
                     <div class="brand-card" onclick="openBrand('OPPO')">
-                        <h4>📱 OPPO</h4>
-                    </div>
-                    <div class="brand-card" onclick="openBrand('Vivo')">
-                        <h4>📱 Vivo</h4>
+                        <h4>📱 Oppo</h4>
                     </div>
                     <div class="brand-card" onclick="openBrand('Xiaomi')">
                         <h4>📱 Xiaomi / Redmi</h4>
                     </div>
-                    <div class="brand-card" onclick="openBrand('iPhone')">
-                        <h4>📱 iPhone</h4>
+                    <div class="brand-card" onclick="openBrand('Vivo')">
+                        <h4>📱 Vivo</h4>
                     </div>
                 </div>
 
@@ -623,9 +623,16 @@
                 { nama: 'Xiaomi 14', harga: 11999000 }
             ],
             'iPhone': [
-                { nama: 'iPhone 11 64GB', harga: 6999000 },
-                { nama: 'iPhone 13 128GB', harga: 11999000 },
-                { nama: 'iPhone 15 128GB', harga: 13999000 }
+                { nama: 'iPhone 15 128GB', harga: 12499000 },
+                { nama: 'iPhone 15 256GB', harga: 15249000 },
+                { nama: 'iPhone 16 128GB', harga: 14999000 },
+                { nama: 'iPhone 16 256GB', harga: 15499000 },
+                { nama: 'iPhone 17 256GB', harga: 17999000 },
+                { nama: 'iPhone 17 512GB', harga: 22249000 },
+                { nama: 'iPhone 17 Pro 256GB', harga: 24499000 },
+                { nama: 'iPhone 17 512GB', harga: 28999000 },
+                { nama: 'iPhone 17 Promax 256GB', harga: 26499000 },
+                { nama: 'iPhone 17 Promax 512GB', harga: 30999000 }
             ]
         };
 
@@ -691,7 +698,7 @@
                 setTimeout(() => {
                     removeTypingBubble(typingId2);
                     subStatus.innerText = "online";
-                    appendMessage(`📦 Yuk, masukkan nominal <b>Harga Barang</b> yang mau kamu hitung cicilannya:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i><br><br>🛍️ <i>Mau cari referensi harga HP idaman? Cuss klik titik tiga (<b>⋮</b>) di kanan atas, lalu pilih <b>"📊 Daftar Harga HP"</b> ya!</i> ✨🔥`, 'bot');
+                    appendMessage(`📦 Yuk, masukkan nominal <b>Harga Barang</b> yang mau kamu hitung cicilannya:<br><br><i>(Contoh: 3.500.000 atau 3500000)</i><br><br>🛍️ <i>Mau cari referensi harga HP idaman? Cuss klik titik tiga (<b>⋮</b>) di kanan atas, lalu pilih <b>"📱 Daftar Harga HP"</b> ya!</i> ✨`, 'bot');
                 }, 1200);
 
             }, 1000);
